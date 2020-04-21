@@ -1,7 +1,15 @@
+## <small>0.1.5 (2020-04-21)</small>
+
+* Cleanup ([46f40bd](https://github.com/dropecho/lib_example/commit/46f40bd))
+
+
+
 ## <small>0.1.4 (2020-04-21)</small>
 
 * fix issue with npm/haxelib both trying to tag ([11e22eb](https://github.com/dropecho/lib_example/commit/11e22eb))
+* Release 0.1.4 ([8c8fcf6](https://github.com/dropecho/lib_example/commit/8c8fcf6))
 * Release v0.1.1 ([4a7abbd](https://github.com/dropecho/lib_example/commit/4a7abbd))
+* version ([d455afc](https://github.com/dropecho/lib_example/commit/d455afc))
 * version ([41fbd23](https://github.com/dropecho/lib_example/commit/41fbd23))
 
 
