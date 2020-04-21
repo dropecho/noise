@@ -12,7 +12,7 @@
   "scripts": {
     "build": "haxe build.hxml",
     "build-changelog": "conventional-changelog -i CHANGELOG.md -s -r 0",
-    "bump": "npm version",
+    "bump": "npm version --no-git-tag-version",
     "haxe:submit": "haxelib run submit",
     "version": "npm run build-changelog && git add CHANGELOG.md",
     "postversion": "npm run haxe:submit"
