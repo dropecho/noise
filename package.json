@@ -1,6 +1,6 @@
 {
   "name": "@dropecho/lib_example",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "An example haxelib that outputs to multiple targets.",
   "author": "vantreeseba <vantreeseba@gmail.com>",
   "repository": "github:dropecho/lib_example",
@@ -12,8 +12,9 @@
   "scripts": {
     "build": "haxe build.hxml",
     "build-changelog": "conventional-changelog -i CHANGELOG.md -s -r 0",
+    "bump": "npm version",
     "haxe:submit": "haxelib run submit",
-    "version": "npm run build-changelog && git add CHANGELOG.md && npm run haxe:submit",
-    "postversion": "git push && git push --tags"
+    "version": "npm run build-changelog && git add CHANGELOG.md",
+    "postversion": "npm run haxe:submit"
   }
 }
