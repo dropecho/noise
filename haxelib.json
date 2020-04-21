@@ -7,8 +7,10 @@
 	"contributors": [
 		"vantreeseba"
 	],
-	"version": "0.1.4",
-	"releasenote": "fix issue with npm/haxelib both trying to tag",
-	"tags": ["example"],
+	"version": "0.1.5",
+	"releasenote": "Cleanup",
+	"tags": [
+		"example"
+	],
 	"license": "MIT"
 }
