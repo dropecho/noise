@@ -7,8 +7,8 @@
 	"contributors": [
 		"vantreeseba"
 	],
-	"version": "0.1.5",
-	"releasenote": "Cleanup",
+	"version": "0.1.6",
+	"releasenote": "Fix website link",
 	"tags": [
 		"example"
 	],
