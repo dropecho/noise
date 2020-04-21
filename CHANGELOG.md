@@ -1,6 +1,14 @@
+## <small>0.1.6 (2020-04-21)</small>
+
+* Fix website link ([5a1ec5c](https://github.com/dropecho/lib_example/commit/5a1ec5c))
+
+
+
 ## <small>0.1.5 (2020-04-21)</small>
 
 * Cleanup ([46f40bd](https://github.com/dropecho/lib_example/commit/46f40bd))
+* Release 0.1.5 ([222ee91](https://github.com/dropecho/lib_example/commit/222ee91))
+* version ([865e8f6](https://github.com/dropecho/lib_example/commit/865e8f6))
 
 
 
