@@ -1,0 +1,14 @@
+{
+	"name": "dropecho.lib_example",
+	"description": "A multi-output library example/template.",
+	"classPath": "src/",
+	"dependencies": {},
+	"url": "https://dropecho.github.io/lib_example/",
+	"contributors": [
+		"vantreeseba"
+	],
+	"version": "0.0.1",
+	"releasenote": "Initial release.",
+	"tags": [],
+	"license": "MIT"
+}
