@@ -7,8 +7,8 @@
 	"contributors": [
 		"vantreeseba"
 	],
-	"version": "0.1.7",
-	"releasenote": "Mark as public for npm",
+	"version": "0.1.8",
+	"releasenote": "test publish to both haxelib & npm",
 	"tags": [
 		"example"
 	],
