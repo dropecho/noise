@@ -1,6 +1,14 @@
+## <small>0.1.8 (2020-04-21)</small>
+
+* test publish to both haxelib & npm ([abd055c](https://github.com/dropecho/lib_example/commit/abd055c))
+
+
+
 ## <small>0.1.7 (2020-04-21)</small>
 
 * Mark as public for npm ([450a9bb](https://github.com/dropecho/lib_example/commit/450a9bb))
+* Release 0.1.7 ([5bf7207](https://github.com/dropecho/lib_example/commit/5bf7207))
+* version ([809d04b](https://github.com/dropecho/lib_example/commit/809d04b))
 
 
 
