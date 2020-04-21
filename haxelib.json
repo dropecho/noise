@@ -9,6 +9,6 @@
 	],
 	"version": "0.1.4",
 	"releasenote": "fix issue with npm/haxelib both trying to tag",
-	"tags": [],
+	"tags": ["example"],
 	"license": "MIT"
 }

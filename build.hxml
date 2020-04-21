@@ -1,4 +1,3 @@
--lib seedyrng
 -cp src
 --macro include('', true, null, ['src'])
 
