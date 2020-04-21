@@ -7,8 +7,8 @@
 	"contributors": [
 		"vantreeseba"
 	],
-	"version": "v0.1.1",
-	"releasenote": "Initial release.",
+	"version": "0.1.4",
+	"releasenote": "fix issue with npm/haxelib both trying to tag",
 	"tags": [],
 	"license": "MIT"
 }
