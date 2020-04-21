@@ -1,5 +1,13 @@
+## <small>0.1.3 (2020-04-21)</small>
+
+* fix issue with npm/haxelib both trying to tag ([11e22eb](https://github.com/dropecho/lib_example/commit/11e22eb))
+* Release v0.1.1 ([4a7abbd](https://github.com/dropecho/lib_example/commit/4a7abbd))
+
+
+
 ## <small>0.1.1 (2020-04-21)</small>
 
+* 0.1.1 ([059fc55](https://github.com/dropecho/lib_example/commit/059fc55))
 
 
 
