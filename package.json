@@ -8,6 +8,9 @@
   "files": [
     "dist/js/index.js"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "scripts": {
     "build": "haxe build.hxml",
