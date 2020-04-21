@@ -1,6 +1,14 @@
+## <small>0.1.7 (2020-04-21)</small>
+
+* Mark as public for npm ([450a9bb](https://github.com/dropecho/lib_example/commit/450a9bb))
+
+
+
 ## <small>0.1.6 (2020-04-21)</small>
 
 * Fix website link ([5a1ec5c](https://github.com/dropecho/lib_example/commit/5a1ec5c))
+* Release 0.1.6 ([7772c0d](https://github.com/dropecho/lib_example/commit/7772c0d))
+* version ([70e95aa](https://github.com/dropecho/lib_example/commit/70e95aa))
 
 
 
