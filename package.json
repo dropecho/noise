@@ -18,6 +18,6 @@
     "bump": "npm version --no-git-tag-version",
     "haxe:submit": "haxelib run submit",
     "version": "npm run build-changelog",
-    "postversion": "git add . && git commit -m 'version' && npm run haxe:submit"
+    "postversion": "git add . && git commit -m 'version' && npm run haxe:submit && npm publish"
   }
 }
