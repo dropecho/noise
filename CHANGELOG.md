@@ -1,6 +1,19 @@
+## 0.2.0 (2020-08-14)
+
+* FEAT: Add a real test. ([a00a4ac](https://github.com/dropecho/lib_example/commit/a00a4ac))
+* FEAT: Add base workflow, add base tests, add test.hxml ([503a64f](https://github.com/dropecho/lib_example/commit/503a64f))
+* FIX: Point to correct action for haxe setup. ([0a24ae4](https://github.com/dropecho/lib_example/commit/0a24ae4))
+* FIX: Remove ci for windows for now, setup haxe action doesn't support. ([be3bc78](https://github.com/dropecho/lib_example/commit/be3bc78))
+* FIX: Remove duplicate on from workflow yaml. ([68edd5b](https://github.com/dropecho/lib_example/commit/68edd5b))
+* Add gitignore, remove artifacts dir from repo ([42168ee](https://github.com/dropecho/lib_example/commit/42168ee))
+
+
+
 ## <small>0.1.8 (2020-04-21)</small>
 
+* Release 0.1.8 ([8c5d761](https://github.com/dropecho/lib_example/commit/8c5d761))
 * test publish to both haxelib & npm ([abd055c](https://github.com/dropecho/lib_example/commit/abd055c))
+* version ([47970da](https://github.com/dropecho/lib_example/commit/47970da))
 
 
 
