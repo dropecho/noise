@@ -1,4 +1,8 @@
+node_modules/
+artifacts
+*.swp
+.temp
 node_modules
-build
-report
+lang_tests/**/*.dll
+lang_tests/**/*.exe
 dist
