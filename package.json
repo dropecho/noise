@@ -1,6 +1,6 @@
 {
   "name": "@dropecho/lib_example",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "An example haxelib that outputs to multiple targets.",
   "author": "vantreeseba <vantreeseba@gmail.com>",
   "repository": "github:dropecho/lib_example",
