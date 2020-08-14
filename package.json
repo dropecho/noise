@@ -19,5 +19,8 @@
     "haxe:submit": "haxelib run submit",
     "version": "npm run build-changelog",
     "postversion": "git add . && git commit -m 'version' && npm run haxe:submit && npm publish"
+  },
+  "devDependencies": {
+    "semantic-release": "^17.1.1"
   }
 }
