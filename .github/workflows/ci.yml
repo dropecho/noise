@@ -11,7 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         haxe: [4.0.5, 3.4.7]
       fail-fast: true
     runs-on: ${{ matrix.os }}
