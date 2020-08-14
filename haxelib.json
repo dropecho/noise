@@ -8,7 +8,7 @@
 		"vantreeseba"
 	],
 	"version": "0.1.8",
-	"releasenote": "test publish to both haxelib & npm",
+	"releasenote": "version",
 	"tags": [
 		"example"
 	],
