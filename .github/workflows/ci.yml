@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
+      - uses: krdlab/setup-haxe@v1
         with:
           haxe-version: ${{ matrix.haxe }}
       - run: haxe -version
