@@ -1,3 +1,10 @@
+## [0.4.4](https://github.com/dropecho/lib_example/compare/0.4.3...0.4.4) (2020-08-15)
+
+
+### Bug Fixes
+
+* include haxelib.json in git release commit ([bf9c08f](https://github.com/dropecho/lib_example/commit/bf9c08f09a9fb49b8a13cc3725ef461035cae62f))
+
 ## [0.4.3](https://github.com/dropecho/lib_example/compare/0.4.2...0.4.3) (2020-08-15)
 
 

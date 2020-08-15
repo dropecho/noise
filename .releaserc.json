@@ -58,6 +58,7 @@
       {
         "assets": [
           "dist/**/*.{js,css}",
+          "*.md",
           "package.json",
           "haxelib.json"
         ]
