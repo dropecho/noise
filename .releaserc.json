@@ -3,7 +3,7 @@
     "master"
   ],
   "tagFormat": "${version}",
-  "dryRun": true,
+  "dryRun": false,
   "ci": false,
   "plugins": [
     [
@@ -41,7 +41,7 @@
     "@semantic-release/changelog",
     "@semantic-release/npm",
     [
-      "@semantic-release/haxelib",
+      "semantic-release-haxelib",
       {
         "haxelibPublish": true,
         "additionalFiles": [
