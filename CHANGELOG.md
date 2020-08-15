@@ -1,3 +1,10 @@
+## [0.4.2](https://github.com/dropecho/lib_example/compare/0.4.1...0.4.2) (2020-08-15)
+
+
+### Bug Fixes
+
+* upgrade again for haxelib ([68b84b6](https://github.com/dropecho/lib_example/commit/68b84b67f0af638cc5db966461fc353327e47272))
+
 ## [0.4.1](https://github.com/dropecho/lib_example/compare/0.4.0...0.4.1) (2020-08-15)
 
 
