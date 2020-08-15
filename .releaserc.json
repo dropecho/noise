@@ -53,7 +53,16 @@
       }
     ],
     "@semantic-release/github",
-    "@semantic-release/git"
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "dist/**/*.{js,css}",
+          "package.json",
+          "haxelib.json"
+        ]
+      }
+    ]
   ],
   "preset": "angular"
 }
