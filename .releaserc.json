@@ -40,6 +40,18 @@
     ],
     "@semantic-release/changelog",
     "@semantic-release/npm",
+    [
+      "@semantic-release/haxelib",
+      {
+        "haxelibPublish": true,
+        "additionalFiles": [
+          "CHANGELOG.md",
+          "LICENSE.md",
+          "README.md",
+          "haxelib.json"
+        ]
+      }
+    ],
     "@semantic-release/github",
     "@semantic-release/git"
   ],
