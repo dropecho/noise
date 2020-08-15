@@ -1,3 +1,10 @@
+## [0.4.5](https://github.com/dropecho/lib_example/compare/0.4.4...0.4.5) (2020-08-15)
+
+
+### Bug Fixes
+
+* re-add markdown files from root. ([e7f010f](https://github.com/dropecho/lib_example/commit/e7f010fbdab645a5a680702b33071642471a5044))
+
 ## [0.4.4](https://github.com/dropecho/lib_example/compare/0.4.3...0.4.4) (2020-08-15)
 
 
