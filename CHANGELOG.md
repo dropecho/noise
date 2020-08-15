@@ -1,3 +1,27 @@
+# [0.4.0](https://github.com/dropecho/lib_example/compare/0.3.0...0.4.0) (2020-08-15)
+
+
+### Bug Fixes
+
+* more work on random release stuff. ([1fedb01](https://github.com/dropecho/lib_example/commit/1fedb0165e28a248c6bb79d24c403779c1163198))
+
+
+### Features
+
+* Add semantic-release-haxelib ([d6e86b7](https://github.com/dropecho/lib_example/commit/d6e86b766dbdc7c78c3e2f0f3934758d99e65bb0))
+
+# [0.4.0](https://github.com/dropecho/lib_example/compare/0.3.0...0.4.0) (2020-08-15)
+
+
+### Bug Fixes
+
+* more work on random release stuff. ([1fedb01](https://github.com/dropecho/lib_example/commit/1fedb0165e28a248c6bb79d24c403779c1163198))
+
+
+### Features
+
+* Add semantic-release-haxelib ([d6e86b7](https://github.com/dropecho/lib_example/commit/d6e86b766dbdc7c78c3e2f0f3934758d99e65bb0))
+
 # [0.3.0](https://github.com/dropecho/lib_example/compare/0.2.0...0.3.0) (2020-08-15)
 
 
