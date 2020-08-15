@@ -3,7 +3,7 @@
     "master"
   ],
   "tagFormat": "${version}",
-  "dryRun": false,
+  "dryRun": true,
   "ci": false,
   "plugins": [
     [
@@ -41,12 +41,6 @@
     "@semantic-release/changelog",
     "@semantic-release/npm",
     "@semantic-release/github",
-    [
-      "@semantic-release/exec",
-      {
-        "publishCmd": "./publish.sh ${nextRelease.version} ${options.branch} ${commits.length} ${Date.now()}"
-      }
-    ],
     "@semantic-release/git"
   ],
   "preset": "angular"
