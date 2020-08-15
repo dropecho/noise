@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/dropecho/lib_example/compare/0.2.0...0.3.0) (2020-08-15)
+
+
+### Features
+
+* **deploy:** Add semantic release. ([8d129ac](https://github.com/dropecho/lib_example/commit/8d129acc402db1c0492aa43132fd934cd6dd6cee))
+
 ## 0.2.0 (2020-08-14)
 
 * FEAT: Add a real test. ([a00a4ac](https://github.com/dropecho/lib_example/commit/a00a4ac))
@@ -63,6 +70,3 @@
 * Fix haxe submit call in package.json ([03e5d55](https://github.com/dropecho/lib_example/commit/03e5d55))
 * Intial commit ([069aaa4](https://github.com/dropecho/lib_example/commit/069aaa4))
 * more tweaks for versioning ([63cd55e](https://github.com/dropecho/lib_example/commit/63cd55e))
-
-
-
