@@ -1,6 +1,18 @@
 # [0.5.0](https://github.com/dropecho/lib_example/compare/0.4.5...0.5.0) (2020-08-16)
 
 
+### Bug Fixes
+
+* update semantic-release haxelib again ([c4b846d](https://github.com/dropecho/lib_example/commit/c4b846dc9f1badbc86e0243442d1792f2ac574ad))
+
+
+### Features
+
+* cleanup release file. ([8af9b55](https://github.com/dropecho/lib_example/commit/8af9b559c82346303dd7694e6328bbd6b54af70e))
+
+# [0.5.0](https://github.com/dropecho/lib_example/compare/0.4.5...0.5.0) (2020-08-16)
+
+
 ### Features
 
 * cleanup release file. ([8af9b55](https://github.com/dropecho/lib_example/commit/8af9b559c82346303dd7694e6328bbd6b54af70e))
