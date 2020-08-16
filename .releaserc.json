@@ -3,8 +3,6 @@
     "master"
   ],
   "tagFormat": "${version}",
-  "dryRun": false,
-  "ci": false,
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
