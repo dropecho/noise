@@ -35,4 +35,5 @@ jobs:
       uses: actions/setup-node@v1
     - name: Publish to NPM
       run: |
+        npm ci
         npx semantic-release
