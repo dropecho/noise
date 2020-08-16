@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/dropecho/lib_example/compare/0.5.0...0.5.1) (2020-08-16)
+
+
+### Bug Fixes
+
+* call npm ci to install deps for build/release. ([6862efc](https://github.com/dropecho/lib_example/commit/6862efc89d74067fe8d147e3216cfaa35bca7347))
+* Update env vars in workflow file. ([d4a71e3](https://github.com/dropecho/lib_example/commit/d4a71e311141b8261af9d1a11ef7f7420dab373c))
+* update release again to allow ci trigger. ([c3cfe57](https://github.com/dropecho/lib_example/commit/c3cfe57ef035e67ffd82f3f108d52a27151257f8))
+
 # [0.5.0](https://github.com/dropecho/lib_example/compare/0.4.5...0.5.0) (2020-08-16)
 
 
