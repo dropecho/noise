@@ -34,6 +34,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v1
     - name: Publish to NPM
+      env: # Or as an environment variable
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        HAXELIB_PASS: ${{secrets.HAXELIB_PASS}} 
+        NPM_TOKEN: ${{secrets.NPM_TOKEN}} 
       run: |
         npm ci
         npx semantic-release
