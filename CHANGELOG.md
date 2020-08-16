@@ -1,3 +1,10 @@
+## [0.5.2](https://github.com/dropecho/lib_example/compare/0.5.1...0.5.2) (2020-08-16)
+
+
+### Bug Fixes
+
+* Setup haxe on deployment step so haxelib exists. ([ed88aa7](https://github.com/dropecho/lib_example/commit/ed88aa747d212d599281df1dce33b6bccef673f4))
+
 ## [0.5.1](https://github.com/dropecho/lib_example/compare/0.5.0...0.5.1) (2020-08-16)
 
 
