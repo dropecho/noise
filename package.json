@@ -1,19 +1,24 @@
 {
-  "name": "@dropecho/lib_example",
+  "name": "@dropecho/noise",
   "version": "0.5.2",
-  "description": "An example haxelib that outputs to multiple targets.",
+  "description": "A library of noise generation tools.",
   "author": "vantreeseba <vantreeseba@gmail.com>",
-  "repository": "github:dropecho/lib_example",
-  "main": "dist/js/index.js",
+  "repository": "github:dropecho/dropecho.noise",
+  "main": "dist/js/dropecho.noise.js",
   "files": [
-    "dist/js/index.js"
+    "dist/js/dropecho.noise.js"
   ],
   "publishConfig": {
     "access": "public"
   },
   "license": "MIT",
   "scripts": {
-    "build": "haxe build.hxml"
+    "install": "lix download",
+    "test": "haxelib run dropecho.testing",
+    "build": "npm run build:haxe && npm run build:example",
+    "build:haxe": "haxe build.hxml",
+    "build:example": "cp dist/js/* docs/",
+    "clean": "rm -rf dist && rm -rf artifacts"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",

@@ -1,0 +1,11 @@
+-lib hxnodejs
+-lib format
+-lib seedyrng
+
+-D js-es=6
+
+-cp src
+
+# OUTPUT 
+--main dropecho.Main
+-js dist/js/node.js 

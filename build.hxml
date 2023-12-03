@@ -1,24 +1,33 @@
 -cp src
---macro include('', true, null, ['src'])
+--macro addGlobalMetadata('dropecho', '@:expose', true, true)
+--macro include('dropecho', true, null, ['src'])
+--macro keep('dropecho', [], true)
+-lib format
+-lib seedyrng
+# -lib dropecho.macros
+
+-D analyzer-optimize
 
 --each
 
 ## JS
 # DEFINES / MACROS
-# -D dce=no
+-D dce=full
 -D js-es=6
--D source-map-content
+# -D source-map-content
+# -lib hxnodejs
 
 # OUTPUT 
--js dist/js/index.js 
+-js dist/js/dropecho.noise.js 
 
-# --next
-## C#
+--next
+# C#
 # DEFINES / MACROS
-# -D dce=no
-# -D dll_import
-# -D no-root
-# -D dll
+-D dce=no
+-D dll_import
+-D no-root
+-D dll
+# -D UNITY
 
-# OUTPUT 
-# -cs dist/cs/rules_engine
+# OUTPUT
+-cs dist/cs/com.dropecho.noise

@@ -1,0 +1,57 @@
+:root {
+  --bg-color-primary: #ccc;
+  --filter-hover: brightness(85%);
+  --filter-active: brightness(80%);
+}
+
+.github {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 10;
+}
+
+.title {
+  font-size: 2em;
+  text-align: center;
+  justify-content: center;
+  padding: 0.5em;
+}
+
+.container {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  justify-items: stretch;
+  align-items: stretch;
+}
+
+.raised {
+  position: relative;
+}
+
+.raised-title {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5em;
+}
+
+.left-panel {
+  flex: 0.3;
+  flex-direction: column;
+}
+
+.right-panel {
+  flex: 1;
+}
+
+.output-text {
+  line-height: 1.2em;
+}
+
+.output-text, .output-code, .output-json {
+  white-space: pre-wrap;
+}

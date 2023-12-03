@@ -1,16 +1,13 @@
 {
-  "name": "dropecho.lib_example",
-  "description": "A multi-output library example/template.",
+  "name": "dropecho.noise",
+  "description": "A node/module based noise generation library.",
   "classPath": "src/",
   "dependencies": {},
-  "url": "https://github.com/dropecho/lib_example/",
-  "contributors": [
-    "vantreeseba"
-  ],
-  "version": "0.5.2",
+  "url": "https://github.com/dropecho/dropecho.noise/",
+  "contributors": ["vantreeseba"],
+  "version": "0.1.0",
   "releasenote": "This is a release note",
-  "tags": [
-    "example"
-  ],
+  "tags": ["noise", "game", "procedural"],
   "license": "MIT"
 }
+
