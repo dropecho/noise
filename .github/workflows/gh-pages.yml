@@ -1,0 +1,11 @@
+name: GH_PAGES
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  ci:
+    uses: dropecho/.github/.github/workflows/haxe-gh-pages.yml@main
+    secrets: inherit
