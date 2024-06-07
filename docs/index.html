@@ -1,29 +1,29 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Story Gen Example.</title>
+    <title>Dropecho Noise Example.</title>
     <link rel="stylesheet" type="text/css" href="index.css" />
-    <script src="./dropecho.noise.js"></script>
+    <script type="module" src="./index.js"></script>
   </head>
 
   <body>
     <header class="title">Noise</header>
     <div class="container">
       <div class="left-panel">
-        <span id="kFps"></span>
-        <progress
-          id="kpFps"
-          value="0"
-          min="0"
-          max="100"
-          style="vertical-align: middle"
-        ></progress>
+        <div>
+          <span id="kFps"></span>
+          <progress
+            id="kpFps"
+            value="0"
+            min="0"
+            max="100"
+            style="vertical-align: middle"
+          ></progress>
+        </div>
       </div>
       <div class="right-panel">
-        <button onclick="drawNoise()">Draw</button>
         <canvas id="canvas" width="512" height="512" />
       </div>
     </div>
   </body>
-  <script src="./index.js"></script>
 </html>

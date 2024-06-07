@@ -20,10 +20,10 @@ class Ridged implements IModule2D {
 			currentAmplitude *= persistence;
 			currentFrequency *= lacunarity;
 
-			val += max - Math.abs(currentValue);
+			val += max - FastMath.abs(currentValue);
 			val *= (val / max);
 		}
 
-		return (val / Math.pow(max, octaves)) - amplitude;
+		return (val / FastMath.pow(max, octaves)) - amplitude;
 	}
 }

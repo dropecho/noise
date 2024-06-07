@@ -7,6 +7,7 @@
 # -lib dropecho.macros
 
 -D analyzer-optimize
+-D analyzer-user-var-fusion
 
 --each
 
@@ -18,7 +19,19 @@
 # -lib hxnodejs
 
 # OUTPUT 
--js dist/js/dropecho.noise.js 
+-js dist/js/cjs/dropecho.noise.js 
+
+--next
+## JS ESM module
+# LIBRARIES
+-lib genes
+
+# DEFINES
+-D dts
+# -D source-map-content
+
+# OUTPUT 
+-js dist/js/esm/index.js 
 
 --next
 # C#
@@ -27,7 +40,6 @@
 -D dll_import
 -D no-root
 -D dll
-# -D UNITY
 
 # OUTPUT
 -cs dist/cs/com.dropecho.noise

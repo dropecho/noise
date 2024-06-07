@@ -1,6 +1,5 @@
 package noise;
 
-import dropecho.noise.Voronoi;
 import utest.Assert;
 import dropecho.noise.Perlin;
 

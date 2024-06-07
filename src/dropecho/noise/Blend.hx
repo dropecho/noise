@@ -1,5 +1,7 @@
 package dropecho.noise;
 
+import dropecho.utils.MathUtils;
+
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Blend implements IModule2D {
 	/**
@@ -11,10 +13,6 @@ class Blend implements IModule2D {
 		var toValue = to.value(x, y);
 		var blendValue = (blender.value(x, y) + 1.0) / 2.0;
 
-		return lerp(fromValue, toValue, blendValue);
-	}
-
-	private function lerp(v0:Float, v1:Float, t:Float):Float {
-		return v0 + t * (v1 - v0);
+		return MathUtils.lerp(fromValue, toValue, blendValue);
 	}
 }

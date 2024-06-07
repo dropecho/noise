@@ -1,5 +1,7 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
+
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Clamp implements IModule2D {
 	/**
@@ -10,6 +12,6 @@ class Clamp implements IModule2D {
 	public function new(input:IModule2D, min:Float = -1, max:Float = 1);
 
 	public function value(x:Float, y:Float):Float {
-		return Math.min(Math.max(input.value(x, y), min), max);
+		return FastMath.min(FastMath.max(input.value(x, y), min), max);
 	}
 }

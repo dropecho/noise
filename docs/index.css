@@ -22,10 +22,14 @@
   height: 100%;
   width: 100%;
 
-  display: flex;
-  flex-direction: row;
-  justify-items: stretch;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  /*   display: flex; */
+  /*   flex-direction: row; */
+  /*   justify-items: stretch; */
+  /*   align-items: stretch; */
+  margin: 0.5em;
+  padding: 0.5em;
 }
 
 .raised {
@@ -40,18 +44,25 @@
 }
 
 .left-panel {
-  flex: 0.3;
-  flex-direction: column;
+  display: grid;
+  grid-auto-rows: 50px;
+  /*   grid-template-rows: repeat(50px, auto); */
+  margin: 0.5em;
+  padding: 0.5em;
 }
 
 .right-panel {
   flex: 1;
+  margin: 0.5em;
+  padding: 0.5em;
 }
 
 .output-text {
   line-height: 1.2em;
 }
 
-.output-text, .output-code, .output-json {
+.output-text,
+.output-code,
+.output-json {
   white-space: pre-wrap;
 }

@@ -5,9 +5,22 @@
 -lib dropecho.testing 
 -lib utest
 -lib format
+-D analyzer-optimize
+-D analyzer-user-var-fusion
+# -D haxe-next
 
 --macro include('', true, null, ['src'])
 
+--each
+
+--next
 -lib hxnodejs
 -D js-es=6
 -js artifacts/js_test.cjs
+
+--next
+-D net-ver=45
+-cs artifacts/cs_test
+
+# --next
+# -cpp artifacts/cpp_test

@@ -1,58 +1,53 @@
 package dropecho.noise;
 
-import dropecho.utils.Vector.Vector2_struct;
+import seedyrng.Random;
 import dropecho.noise.IModule2D;
+import dropecho.utils.FastMath;
+import dropecho.utils.MathUtils;
 
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Perlin implements IModule2D {
-	private static var gradients = new Array<Vector2_struct>();
+	static var random:Random = new Random();
 
-	public function new(octaves:Int = 1, frequency:Float = 1, amplitude:Float = 1, lacunarity:Float = 2, persistence:Float = 1);
+	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
 
-	public function value(x:Float, y:Float):Float {
-		var max:Float = 0; // sum all amplitudes for normalization.
-		var val:Float = 0;
-
-		var amp = this.amplitude;
-		var freq = this.frequency;
+	public function value(x:F32, y:F32):F32 {
+		var val:F32 = 0;
+		var freq:F32 = this.frequency;
+		var cur_persistence:F32 = 1.0;
 
 		for (_ in 0...this.octaves) {
-			val += noise(x * freq, y * freq) * amp;
-
-			max += amp;
-			amp *= this.persistence;
+			val += noise(x * freq, y * freq) * cur_persistence;
 			freq *= this.lacunarity;
+			cur_persistence *= this.persistence;
 		}
 
 		return val;
 	}
 
-	private static inline function randomVector():Vector2_struct {
-		var theta = Math.random() * 2 * Math.PI;
-		return {x: Math.cos(theta), y: Math.sin(theta)};
-	}
+	private static final gradientsx = [
+		for (_ in 0...256)
+			Math.cos(random.random() * 2 * Math.PI) //       Math.cos(Math.random() * 2 * Math.PI)
+	];
+	private static final gradientsy = [
+		for (_ in 0...256)
+			Math.sin(random.random() * 2 * Math.PI) //       Math.sin(Math.random() * 2 * Math.PI)
+	];
 
-	private static inline function dot_prod_grid(x:Float, y:Float, vx:Int, vy:Int) {
-		var size = 16;
+	private static inline function dot_prod_grid(x:F32, y:F32, vx:I32, vy:I32):F32 {
+		var size:Int = 16;
 		var i = (vy % size) * size + (vx % size);
-		var g_vect = gradients[i] != null ? gradients[i] : gradients[i] = randomVector();
-		return (x - vx) * g_vect.x + (y - vy) * g_vect.y;
+		var g_vectx = gradientsx[i];
+		var g_vecty = gradientsy[i];
+		return (x - vx) * g_vectx + (y - vy) * g_vecty;
 	}
 
-	private static inline function interpolate(w:Float, a0:Float, a1:Float):Float {
-		// return (a1 - a0) * w + a0;
-		// Use this cubic interpolation [[Smoothstep]] instead, for a smooth appearance:
-		return (a1 - a0) * (3.0 - w * 2.0) * w * w + a0;
-		// Use [[Smootherstep]] for an even smoother result with a second derivative equal to zero on boundaries:
-		// return (a1 - a0) * ((w * (w * 6.0 - 15.0) + 10.0) * w * w * w) + a0;
-	}
-
-	public static inline function noise(x:Float, y:Float) {
-		var xf = Std.int(x);
-		var yf = Std.int(y);
-		var xf1 = xf + 1;
-		var yf1 = yf + 1;
-		var df = x - xf;
+	public static inline function noise(x:F32, y:F32):F32 {
+		var xf:I32 = FastMath.floor(x);
+		var yf:I32 = FastMath.floor(y);
+		var xf1:I32 = xf + 1;
+		var yf1:I32 = yf + 1;
+		var df:F32 = x - xf;
 
 		// Get gradient grid point dot products.
 		var top_left = dot_prod_grid(x, y, xf, yf);
@@ -60,9 +55,11 @@ class Perlin implements IModule2D {
 		var bottom_left = dot_prod_grid(x, y, xf, yf1);
 		var bottom_right = dot_prod_grid(x, y, xf1, yf1);
 
+		var u = MathUtils.fade(df);
+
 		// interpolate
-		var xt = interpolate(df, top_left, top_right);
-		var xb = interpolate(df, bottom_left, bottom_right);
-		return interpolate(y - yf, xt, xb);
+		var xt = MathUtils.lerp(u, top_left, top_right);
+		var xb = MathUtils.lerp(u, bottom_left, bottom_right);
+		return MathUtils.lerp(MathUtils.fade(y - yf), xt, xb);
 	}
 }

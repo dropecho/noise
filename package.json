@@ -14,10 +14,10 @@
   "license": "MIT",
   "scripts": {
     "install": "lix download",
-    "test": "haxelib run dropecho.testing",
+    "test": "lix run dropecho.testing",
     "build": "npm run build:haxe && npm run build:example",
     "build:haxe": "haxe build.hxml",
-    "build:example": "cp dist/js/* docs/",
+    "build:example": "cp -r dist/js/esm/* docs/dropecho.noise",
     "clean": "rm -rf dist && rm -rf artifacts"
   },
   "devDependencies": {
