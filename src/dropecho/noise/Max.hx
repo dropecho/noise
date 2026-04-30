@@ -2,6 +2,7 @@ package dropecho.noise;
 
 import dropecho.utils.FastMath;
 
+/** Outputs the larger of two source modules' values at each point. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Max implements IModule2D {
 	/**

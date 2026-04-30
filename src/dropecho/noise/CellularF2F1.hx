@@ -3,6 +3,11 @@ package dropecho.noise;
 import dropecho.utils.VectorMath;
 import dropecho.utils.FastMath;
 
+/**
+ * Cellular noise returning sqrt(F2) - sqrt(F1) — the difference between the distance to
+ * the 2nd nearest cell center and the nearest cell center. Produces cracked, rocky, or
+ * dried-mud surface patterns distinct from standard Worley F1 output.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class CellularF2F1 implements IModule2D {
 	private var halfUnitVec:F32 = 0.353;

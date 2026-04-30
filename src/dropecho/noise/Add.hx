@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+/** Outputs the sum of two source modules' values. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Add implements IModule2D {
 	/**

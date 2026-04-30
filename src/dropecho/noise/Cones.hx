@@ -2,6 +2,7 @@ package dropecho.noise;
 
 import dropecho.utils.FastMath;
 
+/** Outputs a concentric cone cross-section pattern — radial distance from each cell center mapped to a tent-shaped peak. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Cones implements IModule2D {
 	public function new(frequency:Float = 1);

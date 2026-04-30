@@ -2,6 +2,11 @@ package dropecho.noise;
 
 typedef CurvePoint = {input:Float, output:Float};
 
+/**
+ * Maps source module output through a piecewise Catmull-Rom spline defined by
+ * (input, output) control point pairs. Control points must be sorted by input value.
+ * Values outside the range of the control points are clamped to the nearest endpoint.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Curve implements IModule2D {
 	public function new(input:IModule2D, points:Array<CurvePoint>);

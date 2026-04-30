@@ -6,6 +6,7 @@ typedef ControlPoint = {
 	var val:Float;
 }
 
+/** Maps source module output to discrete stepped values using [min, max, val] control points. Values that fall in a control point's range are snapped to its val; others pass through unchanged. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Terrace implements IModule2D {
 	/**

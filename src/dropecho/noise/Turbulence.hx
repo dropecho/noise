@@ -1,5 +1,10 @@
 package dropecho.noise;
 
+/**
+ * Randomly displaces input coordinates using Simplex noise before sampling the source module.
+ * Independent x and y displacements are generated using different z-slice values of the same noise.
+ * Power controls displacement magnitude; frequency controls the scale of the distortion.
+ */
 class Turbulence implements IModule2D {
 	var input:IModule2D;
 	var power:Float;

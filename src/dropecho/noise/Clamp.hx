@@ -2,6 +2,7 @@ package dropecho.noise;
 
 import dropecho.utils.FastMath;
 
+/** Clamps the source module's output to a [min, max] range. Values outside the range are pinned to the nearest bound. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Clamp implements IModule2D {
 	/**

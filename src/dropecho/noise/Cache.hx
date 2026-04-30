@@ -4,6 +4,7 @@ import haxe.ds.Map as HaxeMap;
 
 typedef Point = {x:Float, y:Float}
 
+/** Caches source module output to avoid redundant computation when the same coordinates are queried repeatedly by multiple consumers. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Cache implements IModule2D {
 	private var cache:HaxeMap<Point, Float> = new HaxeMap<Point, Float>();

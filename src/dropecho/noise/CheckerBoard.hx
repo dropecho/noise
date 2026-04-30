@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+/** Checkerboard pattern generator. Returns 1 and -1 in alternating grid squares. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class CheckerBoard implements IModule2D {
 	public function new(frequency:Float = 1);

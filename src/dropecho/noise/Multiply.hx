@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+/** Outputs the product of two source modules' values. Useful for masking one noise pattern with another. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Multiply implements IModule2D {
 	/**

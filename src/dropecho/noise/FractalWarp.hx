@@ -1,5 +1,10 @@
 package dropecho.noise;
 
+/**
+ * Domain warp: iteratively displaces the sample coordinates through Simplex noise before
+ * evaluating the source module. Each octave feeds the warped position into the next warp,
+ * producing increasingly complex, swirling distortion.
+ */
 class FractalWarp implements IModule2D {
 	var input:IModule2D;
 	var warpStrength:Float;

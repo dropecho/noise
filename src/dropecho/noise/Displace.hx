@@ -1,5 +1,9 @@
 package dropecho.noise;
 
+/**
+ * Displaces input coordinates using separate x and y noise modules before sampling the source.
+ * If only one displacement module is provided, it is used for both axes.
+ */
 // @:build(dropecho.macros.Constructor.fromParams())
 class Displace implements IModule2D {
 	public var power:Float = 100;

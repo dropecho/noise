@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+/** Scales input coordinates by a scalar before sampling the source module. Equivalent to multiplying the source module's frequency. */
 // @:build(dropecho.macros.Constructor.fromParams())
 class Scale implements IModule2D {
 	var _input:IModule2D;
