@@ -23,8 +23,9 @@ class MathUtils {
 		return t * t * t * (t * (t * 6 - 15) + 10);
 	}
 
-	public static inline function lerp(t:F32, a:F32, b:F32):F32 {
-		return (1 - t) * a + t * b;
+	public static inline function lerp(from:F32, to:F32, alpha:F32):F32 {
+		return from + (to - from) * alpha;
+		//     return (1 - t) * a + t * b;
 		//     return a + t * (b - a);
 	}
 
@@ -45,7 +46,7 @@ class MathUtils {
 	}
 
 	static inline public function mapEasing(val:F32, fromMin:F32, fromMax:F32, toMin:F32, toMax:F32, easing:Easing):F32 {
-		return easing(1 + inverseLerp(val, fromMin, fromMax)) * (toMax - toMin);
+		return toMin + easing(inverseLerp(val, fromMin, fromMax)) * (toMax - toMin);
 	}
 
 	static inline public function map(val:F32, fromMin:F32, fromMax:F32, toMin:F32, toMax:F32):F32 {
