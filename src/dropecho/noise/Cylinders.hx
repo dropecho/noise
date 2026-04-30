@@ -8,8 +8,8 @@ class Cylinders implements IModule2D {
 	public function new(frequency:Float = 1);
 
 	public function value(x:Float, y:Float):Float {
-		var intX = Std.int(x * frequency);
-		var intY = Std.int(y * frequency);
+		var intX = FastMath.floor(x * frequency);
+		var intY = FastMath.floor(y * frequency);
 
 		var x = (x * frequency) - (intX + 0.5);
 		return FastMath.abs(Math.cos(x * Math.PI * 2));
