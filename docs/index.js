@@ -16,16 +16,22 @@ const myImageData = ctx.createImageData(canvasWidth, canvasWidth);
 
 const select = document.createElement('select');
 const noiseMap = {
+  perlin: new noise.Perlin(1, 0.015, 2.5),
+  perlin_octs: new noise.Perlin(3, 0.015, 2.5),
   simplex: new noise.Simplex(3, 0.015, 2.5),
-  perlin: new noise.Perlin(3, 0.015, 2.5),
   cones: new noise.Cones(0.01),
-  ridged: new noise.Ridged(0.01),
+  cylinders: new noise.Cylinders(0.01),
+  ridged: new noise.Ridged(2, 0.015),
+  billow: new noise.Billow(2, 0.015),
   checker: new noise.CheckerBoard(0.01),
   worley: new noise.Worley(0.02),
   voronoi: new noise.Voronoi(0.02),
 };
 
-let currentNoise = noiseMap.simplex;
+// Combinations
+noiseMap.displacedCylinders = new noise.Displace(noiseMap.cylinders, noiseMap.billow);
+
+let currentNoise = noiseMap.perlin;
 for (let k of Object.keys(noiseMap)) {
   const option = document.createElement('option');
   option.value = k;
@@ -77,12 +83,12 @@ const setPixel = (x, y, value, imageData) => {
 
 /** @param {number} offset */
 const drawNoise = (offset) => {
-  let xOff = offset;
-  let yOff = 0;
+  const xOff = offset;
+  const yOff = 0;
 
-  for (let x = 0; x < canvasWidth; x++) {
-    for (let y = 0; y < canvasWidth; y++) {
-      let value = (currentNoise.value(x + xOff, y + yOff) + 1) / 2;
+  for (let y = 0; y < canvasWidth; y++) {
+    for (let x = 0; x < canvasWidth; x++) {
+      const value = (currentNoise.value(x + xOff, y + yOff) + 1) / 2;
       setPixel(x, y, value * 255, myImageData);
     }
   }
