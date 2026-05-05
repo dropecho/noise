@@ -70,7 +70,8 @@ class FastMath {
 		#if cs
 		return Math.floor(f);
 		#else
-		return f >= 0 ? Std.int(f) : Std.int(f - 1);
+		var t = Std.int(f);
+		return f < t ? t - 1 : t;
 		#end
 	}
 
@@ -78,7 +79,8 @@ class FastMath {
 		#if cs
 		return Math.ceil(f);
 		#else
-		return f >= 0 ? Std.int(f + 1) : Std.int(f);
+		var t = Std.int(f);
+		return f > t ? t + 1 : t;
 		#end
 	}
 

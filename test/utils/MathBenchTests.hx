@@ -23,9 +23,11 @@ class MathBenchTests extends utest.Test {
 	}
 
 	public function test_zzz_benchmark() {
+		var acc:F32 = 0;
 		var time = benchmark((index:F32) -> {
-			var x = index + 2;
+			acc += index + 2;
 		});
+		trace('baseline acc: $acc');
 		Assert.notEquals(time, 0);
 	}
 

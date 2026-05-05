@@ -81,19 +81,8 @@ class VectorMath {
 		return new Vector3(a.x * scalar, a.y * scalar, a.z * scalar);
 	}
 
-	// Fast inverseSqrt from id people.
-	public static inline function inverseSqrt(a:Vector3) {
-		var number = a.x * a.x + a.y * a.y + a.z * a.z;
-		var x2:F32;
-		var y:F32;
-		var threehalfs:F32 = 1.5;
-
-		x2 = number * 0.5;
-		y = number;
-		y = 0x5f3759df - (Std.int(y) >> 1);
-		y = y * (threehalfs - (x2 * y * y));
-
-		return y;
+	public static inline function inverseSqrt(a:Vector3):F32 {
+		return 1.0 / FastMath.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 	}
 
 	public static inline function normalize(a:Vector3):Vector3 {

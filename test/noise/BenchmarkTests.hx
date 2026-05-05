@@ -63,18 +63,21 @@ class BenchmarkTests extends utest.Test {
 		var r = benchmark(new Voronoi(1, Euclidian));
 		trace('Voronoi (Euclidian)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
 		Assert.isTrue(r.time > 0);
+		Assert.isTrue(r.min < 0 && r.max > 0);
 	}
 
 	public function test_cab_voronoi_manhattan() {
 		var r = benchmark(new Voronoi(1, Manhattan));
 		trace('Voronoi (Manhattan)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
 		Assert.isTrue(r.time > 0);
+		Assert.isTrue(r.min < 0 && r.max > 0);
 	}
 
 	public function test_cac_voronoi_chebyshev() {
 		var r = benchmark(new Voronoi(1, Chebyshev));
 		trace('Voronoi (Chebyshev)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
 		Assert.isTrue(r.time > 0);
+		Assert.isTrue(r.min < 0 && r.max > 0);
 	}
 
 	public function test_daa_worley() {
