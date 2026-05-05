@@ -110,9 +110,9 @@ class CombinatorTests extends utest.Test {
 
 	public function test_displace_shifts_coords() {
 		var src = new CheckerBoard(1);
-		// 0.004 * power(100) = 0.4 shift: samples src at x+0.4
+		// power=1 (default), constant=0.4 → 0.4 shift on x
 		// src at (0.7,0) = cell (0,0) → 1; src at (1.1,0) = cell (1,0) → -1
-		var d = new Displace(src, new Constant(0.004), new Constant(0));
+		var d = new Displace(src, new Constant(0.4), new Constant(0));
 		Assert.notEquals(src.value(0.7, 0), d.value(0.7, 0));
 	}
 }

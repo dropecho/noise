@@ -1,5 +1,7 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
+
 /**
  * Randomly displaces input coordinates using Simplex noise before sampling the source module.
  * Independent x and y displacements are generated using different z-slice values of the same noise.
@@ -7,19 +9,18 @@ package dropecho.noise;
  */
 class Turbulence implements IModule2D {
 	var input:IModule2D;
-	var power:Float;
-	var frequency:Float;
+	var power:F32;
+	var frequency:F32;
 
-	public function new(input:IModule2D, power:Float = 1, frequency:Float = 1) {
+	public function new(input:IModule2D, power:F32 = 1, frequency:F32 = 1) {
 		this.input = input;
 		this.power = power;
 		this.frequency = frequency;
 	}
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		var sx = x * frequency;
 		var sy = y * frequency;
-		// Use different z values to get independent x and y displacements
 		var xDisplace = Simplex.noise(sx, sy, 0.0) * power;
 		var yDisplace = Simplex.noise(sx, sy, 1.0) * power;
 		return input.value(x + xDisplace, y + yDisplace);

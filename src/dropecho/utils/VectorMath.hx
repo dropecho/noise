@@ -5,9 +5,6 @@ import dropecho.utils.FastMath.I32;
 import dropecho.utils.Vector;
 
 class VectorMath {
-	//   public static inline function rand3dTo3d(a:Vector3_struct):Vector3_struct {
-	//     return {x: a.x + Math.random(), y: a.y + Math.random(), z: a.z};
-	//   }
 	static var magicX:I32 = 9167;
 	static var magicY:I32 = 41179;
 	static var magicZ:I32 = 9167;
@@ -102,8 +99,4 @@ class VectorMath {
 		return new Vector2s(Math.cos(theta), Math.sin(theta));
 	}
 
-	//   private static inline function randomUnitVector3():Vector3 {
-	//     var theta:F32 = Math.random() * 2 * Math.PI;
-	//     return new Vector2s(Math.cos(theta), Math.sin(theta));
-	//   }
 }

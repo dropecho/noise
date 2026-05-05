@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
 import dropecho.utils.MathUtils;
 
 /**
@@ -9,17 +10,17 @@ import dropecho.utils.MathUtils;
  */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Select implements IModule2D {
-	public function new(a:IModule2D, b:IModule2D, control:IModule2D, threshold:Float = 0, falloff:Float = 0);
+	public function new(a:IModule2D, b:IModule2D, control:IModule2D, threshold:F32 = 0, falloff:F32 = 0);
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		var cv = control.value(x, y);
 
 		if (falloff <= 0) {
 			return cv < threshold ? a.value(x, y) : b.value(x, y);
 		}
 
-		var lo = threshold - falloff;
-		var hi = threshold + falloff;
+		var lo:F32 = threshold - falloff;
+		var hi:F32 = threshold + falloff;
 
 		if (cv < lo) return a.value(x, y);
 		if (cv > hi) return b.value(x, y);
