@@ -2,6 +2,11 @@ package dropecho.noise;
 
 import dropecho.utils.FastMath;
 
+/**
+ * 3D Simplex noise generator evaluated on the z=0 plane for 2D output.
+ * Generally produces smoother gradients and fewer directional artefacts than Perlin noise.
+ * Supports multiple octaves for fractal detail.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Simplex implements IModule2D {
 	/**
@@ -53,7 +58,7 @@ class Simplex implements IModule2D {
 	// To remove the need for index wrapping, double the permutation table length
 	// private static var perm = new int[512];
 	private static final perm = [for (i in 0...512) p[i & 255]];
-	private static final perm12 = [for (i in 0...512) perm[i & 255]%12];
+	private static final perm12 = [for (i in 0...512) (perm[i & 255] % 12) * 3];
 
 //   private inline static function dot3(g:Array<F32>, x:F32, y:F32, z:F32):F32 {
   private inline static function dot3(g:Int, x:F32, y:F32, z:F32):F32 {

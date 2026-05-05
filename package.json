@@ -17,7 +17,7 @@
     "test": "lix run dropecho.testing",
     "build": "npm run build:haxe && npm run build:example",
     "build:haxe": "haxe build.hxml",
-    "build:example": "cp -r dist/js/esm/* docs/dropecho.noise",
+    "build:example": "cp -R dist/js/esm/ docs/dropecho.noise/",
     "clean": "rm -rf dist && rm -rf artifacts"
   },
   "devDependencies": {

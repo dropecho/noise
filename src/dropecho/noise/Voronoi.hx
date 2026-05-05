@@ -1,6 +1,5 @@
 package dropecho.noise;
 
-import dropecho.utils.Vector;
 import dropecho.utils.VectorMath;
 import dropecho.utils.FastMath;
 
@@ -10,10 +9,13 @@ enum abstract DistanceType(Int) {
 	var Chebyshev = 2;
 }
 
+/**
+ * Voronoi (cellular) noise generator. Divides space into cells seeded by a fast integer hash,
+ * then outputs a hash value of the nearest cell center. Supports Euclidean, Manhattan, and
+ * Chebyshev distance metrics via the DistanceType enum.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Voronoi implements IModule2D {
-	// Prevents noise from exiting unit cell size.
-	private var unitVec:F32 = 0.76;
 	private var halfUnitVec:F32 = 0.353;
 
 	public function new(frequency:F32, ?distanceType:DistanceType);
@@ -22,43 +24,67 @@ class Voronoi implements IModule2D {
 		x *= frequency;
 		y *= frequency;
 
-		var intX = Std.int(x);
-		var intY = Std.int(y);
+		var ix = FastMath.floor(x);
+		var iy = FastMath.floor(y);
 
-		var cell = new Vector3(x, y, 0.0);
-		var closest = new Vector3(0, 0, 0);
-		var minDistToCandidate = MAX_F32;
+		var minDist:F32 = MAX_F32;
+		var closestCX = 0;
+		var closestCY = 0;
 
-		for (cx in -1...2) {
-			for (cy in -1...2) {
-				var cellX = cx + intX;
-				var cellY = cy + intY;
-
-				var noiseX = halfUnitVec * Simplex.noise(cellX, cellY, 0);
-				var xpos = cellX - noiseX;
-				var ypos = cellY + noiseX;
-
-				var candidate = new Vector3(xpos, ypos, 0.0);
-				var distToCandidate = distance(cell, candidate);
-
-				if (distToCandidate < minDistToCandidate) {
-					closest = candidate;
-					minDistToCandidate = distToCandidate;
-				}
-			}
-		}
-
-		return Simplex.noise(closest.x, closest.y, closest.x * closest.y);
-	}
-
-	private inline function distance(a, b):F32 {
 		switch (distanceType) {
 			case Manhattan:
-				return VectorMath.manhattanDistance(a, b);
+				for (cx in -1...2) {
+					for (cy in -1...2) {
+						var cellX = cx + ix;
+						var cellY = cy + iy;
+						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
+						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+						var dx:F32 = x - (cellX + jx);
+						var dy:F32 = y - (cellY + jy);
+						var dist:F32 = FastMath.abs(dx) + FastMath.abs(dy);
+						if (dist < minDist) {
+							minDist = dist;
+							closestCX = cellX;
+							closestCY = cellY;
+						}
+					}
+				}
 			case Chebyshev:
-				return VectorMath.chebyshevDistance(a, b);
-			case Euclidian | _: // default to Euclidian.
-				return VectorMath.distanceSq(a, b);
+				for (cx in -1...2) {
+					for (cy in -1...2) {
+						var cellX = cx + ix;
+						var cellY = cy + iy;
+						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
+						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+						var dx:F32 = x - (cellX + jx);
+						var dy:F32 = y - (cellY + jy);
+						var dist:F32 = FastMath.max(FastMath.abs(dx), FastMath.abs(dy));
+						if (dist < minDist) {
+							minDist = dist;
+							closestCX = cellX;
+							closestCY = cellY;
+						}
+					}
+				}
+			case Euclidian | _:
+				for (cx in -1...2) {
+					for (cy in -1...2) {
+						var cellX = cx + ix;
+						var cellY = cy + iy;
+						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
+						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+						var dx:F32 = x - (cellX + jx);
+						var dy:F32 = y - (cellY + jy);
+						var dist:F32 = dx * dx + dy * dy;
+						if (dist < minDist) {
+							minDist = dist;
+							closestCX = cellX;
+							closestCY = cellY;
+						}
+					}
+				}
 		}
+
+		return (VectorMath.rand3I32(closestCX, closestCY, 0, 1) / 1073741824.0) - 1.0;
 	}
 }

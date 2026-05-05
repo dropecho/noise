@@ -2,28 +2,32 @@ package dropecho.noise;
 
 import dropecho.utils.FastMath;
 
+/**
+ * Ridged multifractal noise for sharp mountain-ridge and canyon terrain features.
+ * Each octave of Perlin noise is inverted and its absolute value summed, producing
+ * characteristic sharp peaks and deep valleys.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Ridged implements IModule2D {
-	public function new(octaves:Int = 1, frequency:Float = 1, amplitude:Float = 1, lacunarity:Float = 2, persistence:Float = 1);
+	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
 
-	public function value(x:Float, y:Float):Float {
-		var max:Float = 0; // sum all amplitudes for normalization.
-		var val:Float = 0;
+	public function value(x:F32, y:F32):F32 {
+		var val:F32 = 0;
 
-		var currentAmplitude = amplitude;
-		var currentFrequency = frequency;
-		var currentValue:Float;
+		var currentAmplitude:F32 = 1;
+		var currentFrequency:F32 = frequency;
+		var currentValue:F32;
 
 		for (_ in 0...this.octaves) {
-			currentValue = Simplex.noise(x * currentFrequency, y * currentFrequency, 0) * currentAmplitude;
-			max += currentAmplitude;
+			currentValue = Perlin.noise2d(x * currentFrequency, y * currentFrequency);
+			val += currentValue * currentAmplitude;
+
 			currentAmplitude *= persistence;
 			currentFrequency *= lacunarity;
-
-			val += max - FastMath.abs(currentValue);
-			val *= (val / max);
 		}
 
-		return (val / FastMath.pow(max, octaves)) - amplitude;
+		return 1 - FastMath.abs((octaves + 1) * val);
 	}
+
+	static final weights = [];
 }

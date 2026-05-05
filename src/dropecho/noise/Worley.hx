@@ -1,12 +1,14 @@
 package dropecho.noise;
 
-import dropecho.utils.MathUtils;
-import dropecho.utils.Vector;
+import dropecho.utils.VectorMath;
 import dropecho.utils.FastMath;
 
+/**
+ * Worley (F1 cellular) noise generator. Returns the Euclidean distance to the nearest
+ * jittered cell center, scaled to approximately [-1, 1]. Produces a bubbly or cobblestone look.
+ */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Worley implements IModule2D {
-	// Prevents noise from exiting unit cell size.
 	private static inline final halfUnitVec:F32 = 0.353553;
 
 	public function new(frequency:F32);
@@ -15,31 +17,26 @@ class Worley implements IModule2D {
 		x *= frequency;
 		y *= frequency;
 
-		var intX = Std.int(x);
-		var intY = Std.int(y);
+		var ix = FastMath.floor(x);
+		var iy = FastMath.floor(y);
 
-		var cell = new Vector3(x, y, 0.0);
-		var minDistToCandidate = MAX_F32;
+		var minDistSq:F32 = MAX_F32;
 
 		for (cx in -1...2) {
 			for (cy in -1...2) {
-				var cellX = cx + intX;
-				var cellY = cy + intY;
-
-				var noiseX = Simplex.noise(cellX, cellY, 0);
-				//         var noiseX = Perlin.noise(cellX, cellY);
-
-				var xpos = cellX + MathUtils.clamp(noiseX, -halfUnitVec, halfUnitVec);
-				var ypos = cellY + MathUtils.clamp(-noiseX, -halfUnitVec, halfUnitVec);
-				var candidate = new Vector3(xpos, ypos, 0.0);
-				var distToCandidate = (cell - candidate).lengthsq();
-
-				if (distToCandidate < minDistToCandidate) {
-					minDistToCandidate = distToCandidate;
+				var cellX = cx + ix;
+				var cellY = cy + iy;
+				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
+				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+				var dx:F32 = x - (cellX + jx);
+				var dy:F32 = y - (cellY + jy);
+				var distSq:F32 = dx * dx + dy * dy;
+				if (distSq < minDistSq) {
+					minDistSq = distSq;
 				}
 			}
 		}
 
-		return (FastMath.sqrt(minDistToCandidate) * 2) - 1;
+		return (FastMath.sqrt(minDistSq) * 2) - 1;
 	}
 }

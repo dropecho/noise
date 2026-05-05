@@ -1,10 +1,9 @@
 -cp src
 --macro addGlobalMetadata('dropecho', '@:expose', true, true)
 --macro include('dropecho', true, null, ['src'])
---macro keep('dropecho', [], true)
+# --macro keep('dropecho', [], true)
 -lib format
 -lib seedyrng
-# -lib dropecho.macros
 
 -D analyzer-optimize
 -D analyzer-user-var-fusion
@@ -15,8 +14,6 @@
 # DEFINES / MACROS
 -D dce=full
 -D js-es=6
-# -D source-map-content
-# -lib hxnodejs
 
 # OUTPUT 
 -js dist/js/cjs/dropecho.noise.js 
@@ -27,8 +24,8 @@
 -lib genes
 
 # DEFINES
+-D dce=no
 -D dts
-# -D source-map-content
 
 # OUTPUT 
 -js dist/js/esm/index.js 
@@ -43,3 +40,4 @@
 
 # OUTPUT
 -cs dist/cs/com.dropecho.noise
+
