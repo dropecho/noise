@@ -10,7 +10,7 @@ class Min implements IModule2D {
 	 */
 	public function new(input:IModule2D, input2:IModule2D);
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		return FastMath.min(input.value(x, y), input2.value(x, y));
 	}
 }

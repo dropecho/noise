@@ -1,16 +1,13 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
+
 /** Outputs the sum of two source modules' values. */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Add implements IModule2D {
-	/**
-	 * @param input The IModule2D to get a value from. 
-	 * @param min The minimum value to clamp to. 
-	 * @param max The maximum value to clamp to. 
-	 */
 	public function new(input:IModule2D, input2:IModule2D);
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		return (input.value(x, y) + input2.value(x, y));
 	}
 }

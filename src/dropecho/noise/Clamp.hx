@@ -10,9 +10,9 @@ class Clamp implements IModule2D {
 	 * @param min The minimum value to clamp to. 
 	 * @param max The maximum value to clamp to. 
 	 */
-	public function new(input:IModule2D, min:Float = -1, max:Float = 1);
+	public function new(input:IModule2D, min:F32 = -1, max:F32 = 1);
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		return FastMath.min(FastMath.max(input.value(x, y), min), max);
 	}
 }

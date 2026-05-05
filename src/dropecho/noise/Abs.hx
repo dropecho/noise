@@ -10,7 +10,7 @@ class Abs implements IModule2D {
 	 */
 	public function new(input:IModule2D);
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		return FastMath.abs(input.value(x, y));
 	}
 }

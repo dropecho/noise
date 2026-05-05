@@ -1,40 +1,33 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
+
 /**
  * Displaces input coordinates using separate x and y noise modules before sampling the source.
  * If only one displacement module is provided, it is used for both axes.
  */
-// @:build(dropecho.macros.Constructor.fromParams())
 class Displace implements IModule2D {
-	public var power:Float = 100;
+	public var power:F32 = 100;
 
 	var _input:IModule2D;
 	var _xModule:IModule2D;
 	var _yModule:IModule2D;
+	var _sameModule:Bool = false;
 
-	var same_module:Bool = false;
-
-	/**
-	 * @param input The IModule2D to get a value from. 
-	 */
 	public function new(input:IModule2D, xModule:IModule2D, ?yModule:IModule2D) {
 		_input = input;
 		_xModule = xModule;
 		if (yModule == null) {
-			same_module = true;
+			_sameModule = true;
 			_yModule = xModule;
 		} else {
 			_yModule = yModule;
 		}
-	};
+	}
 
-	public inline function value(x:Float, y:Float):Float {
+	public inline function value(x:F32, y:F32):F32 {
 		var xval = _xModule.value(x, y);
-		var yval = same_module ? xval : _yModule.value(x, y);
-
-		var displacedX = (xval * power) + x;
-		var displacedY = (yval * power) + y;
-
-		return _input.value(displacedX, displacedY);
+		var yval = _sameModule ? xval : _yModule.value(x, y);
+		return _input.value((xval * power) + x, (yval * power) + y);
 	}
 }
