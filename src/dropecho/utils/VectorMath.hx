@@ -56,9 +56,9 @@ class VectorMath {
 	}
 
 	public static inline function chebyshevDistance(a:Vector3, b:Vector3):F32 {
-		var dx = b.x - a.x;
-		var dy = b.y - a.y;
-		var dz = b.z - a.z;
+		var dx = FastMath.abs(b.x - a.x);
+		var dy = FastMath.abs(b.y - a.y);
+		var dz = FastMath.abs(b.z - a.z);
 		return FastMath.max(FastMath.max(dx, dy), dz);
 	}
 

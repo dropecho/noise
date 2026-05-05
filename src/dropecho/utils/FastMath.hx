@@ -39,11 +39,19 @@ class FastMath {
 	}
 
 	inline public static function min(a:F32, b:F32):F32 {
+		#if cs
+		return Math.min(a, b);
+		#else
 		return a < b ? a : b;
+		#end
 	}
 
 	inline public static function max(a:F32, b:F32):F32 {
-		return a > b ? a : b;
+		#if cs
+		return Math.max(a, b);
+		#else
+		return a < b ? b : a;
+		#end
 	}
 
 	inline public static function abs(f:F32):F32 {
@@ -59,12 +67,19 @@ class FastMath {
 	}
 
 	inline public static function floor(f:F32):I32 {
+		#if cs
+		return Math.floor(f);
+		#else
 		return f >= 0 ? Std.int(f) : Std.int(f - 1);
+		#end
 	}
 
 	inline public static function ceil(f:F32):I32 {
+		#if cs
 		return Math.ceil(f);
-		//     return f >= 0 ? Std.int(f + 1) : Std.int(f);
+		#else
+		return f >= 0 ? Std.int(f + 1) : Std.int(f);
+		#end
 	}
 
 	inline public static function round(f:F32):I32 {

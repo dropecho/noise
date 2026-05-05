@@ -30,7 +30,6 @@ class Vector3s {
 }
 
 @:forward
-@:nativeGen
 abstract Vector3(Vector3s) from Vector3s to Vector3s {
 	inline public function new(x:F32, y:F32, z:F32) {
 		this = new Vector3s(x, y, z);

@@ -12,7 +12,7 @@ class MathUtils {
 	public static inline function easeBezier(t:F32, p0:F32, p1:F32, p2:F32, p3:F32) {
 		var t = clamp(t, 0, 1);
 		var t0 = FastMath.ipow((1 - t), 3) * p0;
-		var t1 = 3 * FastMath.ipow((1 - t), 2) * FastMath.ipow(t, 2) * p1;
+		var t1 = 3 * FastMath.ipow((1 - t), 2) * t * p1;
 		var t2 = 3 * (1 - t) * FastMath.ipow(t, 2) * p2;
 		var t3 = FastMath.ipow(t, 3) * p3;
 
