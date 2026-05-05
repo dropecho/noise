@@ -3,6 +3,7 @@ package noise;
 import utest.Assert;
 import dropecho.noise.Constant;
 import dropecho.noise.Terrace;
+import dropecho.noise.ControlPoint;
 
 class TerraceTests extends utest.Test {
 	public function test_snaps_value_in_range() {
@@ -35,7 +36,7 @@ class TerraceTests extends utest.Test {
 	}
 
 	public function test_multiple_control_points_route_correctly() {
-		var pts = [
+		var pts:Array<ControlPoint> = [
 			{min: -1.0, max: -0.5, val: -0.75},
 			{min: -0.5, max: 0.0, val: -0.25},
 			{min: 0.0, max: 0.5, val: 0.25},
