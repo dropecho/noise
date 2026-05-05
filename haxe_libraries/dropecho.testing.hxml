@@ -1,4 +1,4 @@
-# @run: haxelib run-dir dropecho.testing "/home/vantreeseba/code/dropecho/dropecho.testing"
--cp /home/vantreeseba/code/dropecho/dropecho.testing/src/
--D dropecho.testing=1.1.4
---macro Sys.println("haxe_libraries/dropecho.testing.hxml:2: [Warning] Using dev version of library dropecho.testing")
+# @install: lix --silent download "haxelib:/dropecho.testing#1.3.0" into dropecho.testing/1.3.0/haxelib
+# @run: haxelib run-dir dropecho.testing "${HAXE_LIBCACHE}/dropecho.testing/1.3.0/haxelib"
+-cp ${HAXE_LIBCACHE}/dropecho.testing/1.3.0/haxelib/src/
+-D dropecho.testing=1.3.0
