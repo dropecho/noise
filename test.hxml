@@ -12,15 +12,18 @@
 
 --each
 
- --next
- -lib hxnodejs
- -D js-es=6
- -js artifacts/js_test.cjs
+--next
+-lib hxnodejs
+-D js-es=6
+-js artifacts/js_test.cjs
 
  --next
 -D unsafe
 -D net-ver=50
 -cs artifacts/cs_test
+
+--next
+-python artifacts/py_test.py
 
 # --next
 # -cpp artifacts/cpp_test
