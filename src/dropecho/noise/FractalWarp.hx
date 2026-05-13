@@ -1,5 +1,7 @@
 package dropecho.noise;
 
+import dropecho.utils.FastMath;
+
 /**
  * Domain warp: iteratively displaces the sample coordinates through Simplex noise before
  * evaluating the source module. Each octave feeds the warped position into the next warp,
@@ -7,18 +9,18 @@ package dropecho.noise;
  */
 class FractalWarp implements IModule2D {
 	var input:IModule2D;
-	var warpStrength:Float;
-	var warpFrequency:Float;
+	var warpStrength:F32;
+	var warpFrequency:F32;
 	var octaves:Int;
 
-	public function new(input:IModule2D, warpStrength:Float = 1, warpFrequency:Float = 1, octaves:Int = 1) {
+	public function new(input:IModule2D, warpStrength:F32 = 1, warpFrequency:F32 = 1, octaves:Int = 1) {
 		this.input = input;
 		this.warpStrength = warpStrength;
 		this.warpFrequency = warpFrequency;
 		this.octaves = octaves;
 	}
 
-	public function value(x:Float, y:Float):Float {
+	public function value(x:F32, y:F32):F32 {
 		var wx = x;
 		var wy = y;
 

@@ -8,10 +8,10 @@ class VectorMath {
 	//   public static inline function rand3dTo3d(a:Vector3_struct):Vector3_struct {
 	//     return {x: a.x + Math.random(), y: a.y + Math.random(), z: a.z};
 	//   }
-	static var magicX:I32 = 9167;
-	static var magicY:I32 = 41179;
-	static var magicZ:I32 = 9167;
-	static var magicS:I32 = 4819;
+	static inline final magicX:I32 = 9167;
+	static inline final magicY:I32 = 41179;
+	static inline final magicZ:I32 = 9167;
+	static inline final magicS:I32 = 4819;
 
 	static public inline function rand3(a:Vector3s, seed:I32):F32 {
 		return 1.0 - (rand3I32(Std.int(a.x), Std.int(a.y), Std.int(a.z), seed) / 1073741824.0);

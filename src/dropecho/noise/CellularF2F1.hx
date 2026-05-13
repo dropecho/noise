@@ -10,7 +10,7 @@ import dropecho.utils.FastMath;
  */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class CellularF2F1 implements IModule2D {
-	private var halfUnitVec:F32 = 0.353;
+	private static inline final halfUnitVec:F32 = 0.353;
 
 	public function new(frequency:F32);
 

@@ -25,6 +25,8 @@ class Select implements IModule2D {
 		if (cv > hi) return b.value(x, y);
 
 		var t = MathUtils.fade((cv - lo) / (falloff * 2));
+		if (t <= 0) return a.value(x, y);
+		if (t >= 1) return b.value(x, y);
 		return MathUtils.lerp(a.value(x, y), b.value(x, y), t);
 	}
 }

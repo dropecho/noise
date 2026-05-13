@@ -16,7 +16,7 @@ enum abstract DistanceType(Int) {
  */
 @:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Voronoi implements IModule2D {
-	private var halfUnitVec:F32 = 0.353;
+	private static inline final halfUnitVec:F32 = 0.353;
 
 	public function new(frequency:F32, ?distanceType:DistanceType);
 
@@ -31,58 +31,25 @@ class Voronoi implements IModule2D {
 		var closestCX = 0;
 		var closestCY = 0;
 
-		switch (distanceType) {
-			case Manhattan:
-				for (cx in -1...2) {
-					for (cy in -1...2) {
-						var cellX = cx + ix;
-						var cellY = cy + iy;
-						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
-						var dx:F32 = x - (cellX + jx);
-						var dy:F32 = y - (cellY + jy);
-						var dist:F32 = FastMath.abs(dx) + FastMath.abs(dy);
-						if (dist < minDist) {
-							minDist = dist;
-							closestCX = cellX;
-							closestCY = cellY;
-						}
-					}
+		for (cx in -1...2) {
+			for (cy in -1...2) {
+				var cellX = cx + ix;
+				var cellY = cy + iy;
+				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
+				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+				var dx:F32 = x - (cellX + jx);
+				var dy:F32 = y - (cellY + jy);
+				var dist:F32 = switch (distanceType) {
+					case Manhattan: FastMath.abs(dx) + FastMath.abs(dy);
+					case Chebyshev: FastMath.max(FastMath.abs(dx), FastMath.abs(dy));
+					case Euclidian | _: dx * dx + dy * dy;
+				};
+				if (dist < minDist) {
+					minDist = dist;
+					closestCX = cellX;
+					closestCY = cellY;
 				}
-			case Chebyshev:
-				for (cx in -1...2) {
-					for (cy in -1...2) {
-						var cellX = cx + ix;
-						var cellY = cy + iy;
-						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
-						var dx:F32 = x - (cellX + jx);
-						var dy:F32 = y - (cellY + jy);
-						var dist:F32 = FastMath.max(FastMath.abs(dx), FastMath.abs(dy));
-						if (dist < minDist) {
-							minDist = dist;
-							closestCX = cellX;
-							closestCY = cellY;
-						}
-					}
-				}
-			case Euclidian | _:
-				for (cx in -1...2) {
-					for (cy in -1...2) {
-						var cellX = cx + ix;
-						var cellY = cy + iy;
-						var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-						var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
-						var dx:F32 = x - (cellX + jx);
-						var dy:F32 = y - (cellY + jy);
-						var dist:F32 = dx * dx + dy * dy;
-						if (dist < minDist) {
-							minDist = dist;
-							closestCX = cellX;
-							closestCY = cellY;
-						}
-					}
-				}
+			}
 		}
 
 		return (VectorMath.rand3I32(closestCX, closestCY, 0, 1) / 1073741824.0) - 1.0;
