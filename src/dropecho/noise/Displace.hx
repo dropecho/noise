@@ -25,7 +25,7 @@ class Displace implements IModule2D {
 		}
 	}
 
-	public inline function value(x:F32, y:F32):F32 {
+	public function value(x:F32, y:F32):F32 {
 		var xval = _xModule.value(x, y);
 		var yval = _sameModule ? xval : _yModule.value(x, y);
 		return _input.value((xval * power) + x, (yval * power) + y);

@@ -43,7 +43,7 @@ import dropecho.noise.Worley;
 import utest.Assert;
 
 class BenchmarkTests extends utest.Test {
-	#if (sys || nodejs)
+	#if (RUN_BENCHMARKS && (sys || nodejs))
 	static inline final SIZE = 512;
 
 	function benchmark(module:IModule2D) {

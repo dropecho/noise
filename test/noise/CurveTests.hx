@@ -37,4 +37,14 @@ class CurveTests extends utest.Test {
 		]);
 		Assert.floatEquals(0.0, c.value(0, 0));
 	}
+
+	public function test_value_in_upper_segment_advances_search() {
+		var c = new Curve(new Constant(0.5), [
+			{input: -1.0, output: -1.0},
+			{input: 0.0, output: 0.0},
+			{input: 1.0, output: 1.0}
+		]);
+		// 0.5 is between points[1] and points[2], forcing i++ to execute
+		Assert.isTrue(c.value(0, 0) > 0.0 && c.value(0, 0) <= 1.0);
+	}
 }
