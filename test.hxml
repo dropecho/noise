@@ -26,4 +26,8 @@
 -python artifacts/py_test.py
 
 # --next
+# -lib gdscript
+# -D gdscript-output=artifacts/gdscript_test
+
+# --next
 # -cpp artifacts/cpp_test
