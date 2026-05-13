@@ -20,12 +20,16 @@ class Terrace implements IModule2D {
 	public function value(x:F32, y:F32):F32 {
 		var v = input.value(x, y);
 
-		if (points != null) {
-			for (point in points) {
-				if (v >= point.min && v < point.max) {
-					return point.val;
-				}
-			}
+		if (points == null) return v;
+
+		var lo = 0;
+		var hi = points.length - 1;
+		while (lo <= hi) {
+			var mid = (lo + hi) >> 1;
+			var p = points[mid];
+			if (v < p.min) hi = mid - 1;
+			else if (v >= p.max) lo = mid + 1;
+			else return p.val;
 		}
 
 		return v;
