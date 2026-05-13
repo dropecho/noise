@@ -60,4 +60,13 @@ class MathUtils {
 	static inline public function clamp(val:F32, min:F32, max:F32) {
 		return FastMath.max(min, FastMath.min(val, max));
 	}
+
+	// Returns the first index in [lo, hi) where pred(i) is true (pred must be monotone false→true).
+	public static inline function lowerBound(lo:Int, hi:Int, pred:Int->Bool):Int {
+		while (lo < hi) {
+			var mid = (lo + hi) >> 1;
+			if (pred(mid)) hi = mid; else lo = mid + 1;
+		}
+		return lo;
+	}
 }
