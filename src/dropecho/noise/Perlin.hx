@@ -33,7 +33,7 @@ class Perlin implements IModule2D {
 
 	// haxe.ds.Vector compiles to a native array on C# (no Array wrapper indirection)
 	// and to a plain array on JS/Python.
-	private static final _gradAngles:Array<F32> = [for (_ in 0...256) random.random() * 2 * Math.PI];
+	private static final _gradAngles:Array<Float> = [for (_ in 0...256) random.random() * 2 * Math.PI];
 	private static final gradients_x:Vector<F32> = Vector.fromArrayCopy([for (a in _gradAngles) (Math.cos(a) : F32)]);
 	private static final gradients_y:Vector<F32> = Vector.fromArrayCopy([for (a in _gradAngles) (Math.sin(a) : F32)]);
 
