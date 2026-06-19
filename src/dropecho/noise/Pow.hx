@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Raises the first module's output to the power of the second module's output. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Pow implements IModule2D {
 	public function new(input:IModule2D, input2:IModule2D);
 

@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Outputs the product of two source modules' values. Useful for masking one noise pattern with another. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Multiply implements IModule2D {
 	public function new(input:IModule2D, input2:IModule2D);
 

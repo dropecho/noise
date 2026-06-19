@@ -7,7 +7,7 @@ import dropecho.utils.MathUtils;
  * When falloff > 0, a smooth fade is applied in the region [threshold - falloff, threshold + falloff]
  * using a 5th-order fade curve. Outside that region the selection is hard.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Select implements IModule2D {
 	public function new(a:IModule2D, b:IModule2D, control:IModule2D, threshold:Float = 0, falloff:Float = 0);
 

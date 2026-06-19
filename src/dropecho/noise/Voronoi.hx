@@ -14,7 +14,7 @@ enum abstract DistanceType(Int) {
  * then outputs a hash value of the nearest cell center. Supports Euclidean, Manhattan, and
  * Chebyshev distance metrics via the DistanceType enum.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Voronoi implements IModule2D {
 	private static inline final halfUnitVec:F32 = 0.353;
 

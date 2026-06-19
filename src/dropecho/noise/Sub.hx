@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Outputs the difference of two source modules' values (input - input2). */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Sub implements IModule2D {
 	public function new(input:IModule2D, input2:IModule2D);
 

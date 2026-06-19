@@ -7,7 +7,7 @@ import dropecho.utils.FastMath;
  * Worley (F1 cellular) noise generator. Returns the Euclidean distance to the nearest
  * jittered cell center, scaled to approximately [-1, 1]. Produces a bubbly or cobblestone look.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Worley implements IModule2D {
 	private static inline final halfUnitVec:F32 = 0.353553;
 

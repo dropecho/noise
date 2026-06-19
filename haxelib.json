@@ -2,7 +2,9 @@
   "name": "dropecho.noise",
   "description": "A node/module based noise generation library.",
   "classPath": "src/",
-  "dependencies": {},
+  "dependencies": {
+    "dropecho.macros": ""
+  },
   "url": "https://github.com/dropecho/dropecho.noise/",
   "contributors": ["vantreeseba"],
   "version": "0.1.0",

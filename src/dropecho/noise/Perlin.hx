@@ -10,7 +10,7 @@ import dropecho.utils.MathUtils;
  * and unit-circle gradient vectors. Supports multiple octaves for fractal detail, controlled by
  * lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Perlin implements IModule2D {
 	static var random:Random = new Random(69420);
 

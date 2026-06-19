@@ -8,7 +8,7 @@ import dropecho.utils.FastMath;
  * per-axis displacements via different z slices.
  * Supports multiple octaves for fractal detail.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Simplex implements IModule2D {
 	/**
 	 * @param octaves The number of octaves in the noise (how many "layers").

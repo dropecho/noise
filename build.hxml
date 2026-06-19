@@ -4,6 +4,7 @@
 # --macro keep('dropecho', [], true)
 -lib format
 -lib seedyrng
+-lib dropecho.macros
 
 -D analyzer-optimize
 -D analyzer-user-var-fusion
