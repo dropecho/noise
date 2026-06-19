@@ -45,6 +45,9 @@ import utest.Assert;
 class BenchmarkTests extends utest.Test {
 	#if (RUN_BENCHMARKS && (sys || nodejs))
 	static inline final SIZE = 512;
+	// Spread samples over SPAN x SPAN lattice cells instead of a single [0,1) cell,
+	// so perm-table lookups, cell hashing, and branches see realistic access patterns.
+	static inline final SPAN = 32;
 
 	function benchmark(module:IModule2D) {
 		var start = Sys.cpuTime();
@@ -53,7 +56,7 @@ class BenchmarkTests extends utest.Test {
 
 		for (x in 0...SIZE) {
 			for (y in 0...SIZE) {
-				var val = module.value(x / SIZE, y / SIZE);
+				var val = module.value(x * (SPAN / SIZE), y * (SPAN / SIZE));
 				if (val < min)
 					min = val;
 				if (val > max)
