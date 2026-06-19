@@ -4,7 +4,7 @@ import dropecho.utils.FastMath;
 import dropecho.utils.MathUtils;
 
 /** Linearly interpolates between two source modules using a third module as the blend factor. The blender output is used directly as the lerp alpha. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Blend implements IModule2D {
 	public function new(from:IModule2D, to:IModule2D, blender:IModule2D);
 

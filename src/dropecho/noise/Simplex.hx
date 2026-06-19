@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import haxe.ds.Vector;
 import dropecho.utils.FastMath;
 
 /**
@@ -8,7 +9,7 @@ import dropecho.utils.FastMath;
  * per-axis displacements via different z slices.
  * Supports multiple octaves for fractal detail.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Simplex implements IModule2D {
 	/**
 	 * @param octaves The number of octaves in the noise (how many "layers").
@@ -38,12 +39,14 @@ class Simplex implements IModule2D {
 
 	private static inline final uvec:F32 = .707;
 
+	// haxe.ds.Vector compiles to a native array on C# (no Array wrapper indirection)
+	// and to a plain array on JS/Python.
 	// @formatter:off
-	private static final grad3:Array<F32> = [
+	private static final grad3:Vector<F32> = Vector.fromArrayCopy(([
 		uvec, uvec, 0, -uvec, uvec, 0, uvec, -uvec, 0, -uvec, -uvec, 0,
 		uvec, 0, uvec, -uvec, 0, uvec, uvec, 0, -uvec, -uvec, 0, -uvec,
 		0, uvec, uvec, 0, -uvec, uvec, 0, uvec, -uvec, 0, -uvec, -uvec
-	];
+	] : Array<F32>));
 
 	private static final p = [
 		151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225, 140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148, 247, 120,
@@ -57,8 +60,8 @@ class Simplex implements IModule2D {
 	];
 	// @formatter:on
 
-	private static final perm = [for (i in 0...512) p[i & 255]];
-	private static final perm12 = [for (i in 0...512) (perm[i & 255] % 12) * 3];
+	private static final perm:Vector<Int> = Vector.fromArrayCopy([for (i in 0...512) p[i & 255]]);
+	private static final perm12:Vector<Int> = Vector.fromArrayCopy([for (i in 0...512) (perm[i & 255] % 12) * 3]);
 
 	private static inline function dot3(g:Int, x:F32, y:F32, z:F32):F32 {
 		return grad3[g] * x + grad3[g + 1] * y + grad3[g + 2] * z;

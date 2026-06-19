@@ -2,8 +2,9 @@
 -cp test
 
 -lib seedyrng
--lib dropecho.testing 
+-lib dropecho.testing
 -lib utest
+-lib dropecho.macros
 -D analyzer-optimize
 -D analyzer-user-var-fusion
 -w -WDeprecated

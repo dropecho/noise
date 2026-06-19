@@ -7,7 +7,7 @@ import dropecho.utils.FastMath;
  * Each octave of Perlin noise is inverted and its absolute value summed, producing
  * characteristic sharp peaks and deep valleys.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Ridged implements IModule2D {
 	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
 

@@ -1,6 +1,7 @@
 package dropecho.noise;
 
 import dropecho.utils.FastMath;
+import haxe.ds.Vector;
 
 typedef CurvePoint = {input:F32, output:F32};
 
@@ -9,38 +10,48 @@ typedef CurvePoint = {input:F32, output:F32};
  * (input, output) control point pairs. Control points must be sorted by input value.
  * Values outside the range of the control points are clamped to the nearest endpoint.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
 class Curve implements IModule2D {
-	public function new(input:IModule2D, points:Array<CurvePoint>);
+	var input:IModule2D;
+
+	// Control points unpacked into parallel vectors: anonymous-structure field access
+	// is a dynamic by-name lookup on C#/Python and a pointer chase on JS.
+	var inputs:Vector<F32>;
+	var outputs:Vector<F32>;
+	var n:Int;
+
+	public function new(input:IModule2D, points:Array<CurvePoint>) {
+		this.input = input;
+		n = points.length;
+		inputs = new Vector<F32>(n);
+		outputs = new Vector<F32>(n);
+		for (i in 0...n) {
+			inputs[i] = points[i].input;
+			outputs[i] = points[i].output;
+		}
+	}
 
 	public function value(x:F32, y:F32):F32 {
 		var v = input.value(x, y);
-		var n = points.length;
 
 		if (n == 0) return v;
-		if (v <= points[0].input) return points[0].output;
-		if (v >= points[n - 1].input) return points[n - 1].output;
+		if (v <= inputs[0]) return outputs[0];
+		if (v >= inputs[n - 1]) return outputs[n - 1];
 
 		var lo = 1;
 		var hi = n - 1;
 		while (lo < hi) {
 			var mid = (lo + hi) >> 1;
-			if (points[mid].input < v) lo = mid + 1; else hi = mid;
+			if (inputs[mid] < v) lo = mid + 1; else hi = mid;
 		}
 		var i = lo;
 
-		var p0 = points[i - 2 < 0 ? 0 : i - 2];
-		var p1 = points[i - 1];
-		var p2 = points[i];
-		var p3 = points[i + 1 >= n ? n - 1 : i + 1];
-
-		var p1i:F32 = p1.input;
-		var p2i:F32 = p2.input;
+		var p1i:F32 = inputs[i - 1];
+		var p2i:F32 = inputs[i];
 		var t:F32 = (v - p1i) / (p2i - p1i);
-		var p0o:F32 = p0.output;
-		var p1o:F32 = p1.output;
-		var p2o:F32 = p2.output;
-		var p3o:F32 = p3.output;
+		var p0o:F32 = outputs[i - 2 < 0 ? 0 : i - 2];
+		var p1o:F32 = outputs[i - 1];
+		var p2o:F32 = outputs[i];
+		var p3o:F32 = outputs[i + 1 >= n ? n - 1 : i + 1];
 		return catmullRom(p0o, p1o, p2o, p3o, t);
 	}
 

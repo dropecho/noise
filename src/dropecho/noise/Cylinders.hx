@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Outputs concentric cylinder cross-section rings aligned along the x-axis. Produces parallel band patterns. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Cylinders implements IModule2D {
 	public function new(frequency:F32 = 1);
 
