@@ -21,9 +21,13 @@ class Curve implements IModule2D {
 		if (v <= points[0].input) return points[0].output;
 		if (v >= points[n - 1].input) return points[n - 1].output;
 
-		var i = 1;
-		while (i < n && points[i].input < v)
-			i++;
+		var lo = 1;
+		var hi = n - 1;
+		while (lo < hi) {
+			var mid = (lo + hi) >> 1;
+			if (points[mid].input < v) lo = mid + 1; else hi = mid;
+		}
+		var i = lo;
 
 		var p0 = points[i - 2 < 0 ? 0 : i - 2];
 		var p1 = points[i - 1];

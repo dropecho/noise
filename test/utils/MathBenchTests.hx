@@ -9,7 +9,7 @@ import dropecho.noise.Perlin;
 import dropecho.utils.FastMath;
 
 class MathBenchTests extends utest.Test {
-	#if (sys || nodejs)
+	#if (RUN_BENCHMARKS && (sys || nodejs))
 	function benchmark(func:(index:F32) -> Void) {
 		var start = Sys.cpuTime();
 

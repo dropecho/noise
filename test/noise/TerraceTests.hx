@@ -3,16 +3,17 @@ package noise;
 import utest.Assert;
 import dropecho.noise.Constant;
 import dropecho.noise.Terrace;
-import dropecho.noise.ControlPoint;
+import dropecho.noise.Terrace.ControlPoint;
+import dropecho.utils.FastMath.F32;
 
 class TerraceTests extends utest.Test {
 	public function test_snaps_value_in_range() {
-		var t = new Terrace(new Constant(-0.5), [{min: -1.0, max: 0.0, val: -0.25}]);
+		var t = new Terrace(new Constant(-0.5), [{min: (-1.0 : F32), max: (0.0 : F32), val: (-0.25 : F32)}]);
 		Assert.floatEquals(-0.25, t.value(0, 0));
 	}
 
 	public function test_passes_through_unmatched() {
-		var t = new Terrace(new Constant(0.5), [{min: -1.0, max: 0.0, val: -0.25}]);
+		var t = new Terrace(new Constant(0.5), [{min: (-1.0 : F32), max: (0.0 : F32), val: (-0.25 : F32)}]);
 		Assert.floatEquals(0.5, t.value(0, 0));
 	}
 
@@ -25,22 +26,21 @@ class TerraceTests extends utest.Test {
 	}
 
 	public function test_max_is_exclusive() {
-		// v == max should NOT snap
-		var t = new Terrace(new Constant(0.0), [{min: -1.0, max: 0.0, val: -0.5}]);
+		var t = new Terrace(new Constant(0.0), [{min: (-1.0 : F32), max: (0.0 : F32), val: (-0.5 : F32)}]);
 		Assert.floatEquals(0.0, t.value(0, 0));
 	}
 
 	public function test_min_is_inclusive() {
-		var t = new Terrace(new Constant(-1.0), [{min: -1.0, max: 0.0, val: -0.5}]);
+		var t = new Terrace(new Constant(-1.0), [{min: (-1.0 : F32), max: (0.0 : F32), val: (-0.5 : F32)}]);
 		Assert.floatEquals(-0.5, t.value(0, 0));
 	}
 
 	public function test_multiple_control_points_route_correctly() {
 		var pts:Array<ControlPoint> = [
-			{min: -1.0, max: -0.5, val: -0.75},
-			{min: -0.5, max: 0.0, val: -0.25},
-			{min: 0.0, max: 0.5, val: 0.25},
-			{min: 0.5, max: 1.0, val: 0.75},
+			{min: (-1.0 : F32), max: (-0.5 : F32), val: (-0.75 : F32)},
+			{min: (-0.5 : F32), max: (0.0 : F32),  val: (-0.25 : F32)},
+			{min: (0.0 : F32),  max: (0.5 : F32),  val: (0.25 : F32)},
+			{min: (0.5 : F32),  max: (1.0 : F32),  val: (0.75 : F32)},
 		];
 		Assert.floatEquals(-0.75, new Terrace(new Constant(-0.8), pts).value(0, 0));
 		Assert.floatEquals(-0.25, new Terrace(new Constant(-0.3), pts).value(0, 0));

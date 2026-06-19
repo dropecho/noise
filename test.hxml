@@ -17,9 +17,17 @@
 -D js-es=6
 -js artifacts/js_test.cjs
 
---next
--D net-ver=45
+ --next
+-D unsafe
+-D net-ver=50
 -cs artifacts/cs_test
+
+--next
+-python artifacts/py_test.py
+
+# --next
+# -lib gdscript
+# -D gdscript-output=artifacts/gdscript_test
 
 # --next
 # -cpp artifacts/cpp_test

@@ -19,10 +19,10 @@ class Turbulence implements IModule2D {
 	}
 
 	public function value(x:F32, y:F32):F32 {
-		var sx = x * frequency;
-		var sy = y * frequency;
-		var xDisplace = Simplex.noise(sx, sy, 0.0) * power;
-		var yDisplace = Simplex.noise(sx, sy, 1.0) * power;
+		var sx:F32 = x * frequency;
+		var sy:F32 = y * frequency;
+		var xDisplace:F32 = Simplex.noise(sx, sy, 0.0) * power;
+		var yDisplace:F32 = Simplex.noise(sx, sy, 1.0) * power;
 		return input.value(x + xDisplace, y + yDisplace);
 	}
 }

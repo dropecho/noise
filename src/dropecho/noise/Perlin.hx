@@ -30,7 +30,7 @@ class Perlin implements IModule2D {
 		return val;
 	}
 
-	private static final _gradAngles:Array<Float> = [for (_ in 0...256) random.random() * 2 * Math.PI];
+	private static final _gradAngles:Array<F32> = [for (_ in 0...256) random.random() * 2 * Math.PI];
 	private static final gradients_x:Array<F32> = [for (a in _gradAngles) Math.cos(a)];
 	private static final gradients_y:Array<F32> = [for (a in _gradAngles) Math.sin(a)];
 
@@ -58,9 +58,9 @@ class Perlin implements IModule2D {
 		final X:I32 = FastMath.floor(x);
 		final Y:I32 = FastMath.floor(y);
 
-		var top_left = dot_prod_grid(x, y, X, Y);
-		var bottom_left = dot_prod_grid(x, y, X, Y + 1);
-		var top_right = dot_prod_grid(x, y, X + 1, Y);
+		var top_left     = dot_prod_grid(x, y, X,     Y);
+		var bottom_left  = dot_prod_grid(x, y, X,     Y + 1);
+		var top_right    = dot_prod_grid(x, y, X + 1, Y);
 		var bottom_right = dot_prod_grid(x, y, X + 1, Y + 1);
 
 		var u = MathUtils.fade(x - X);
@@ -68,7 +68,7 @@ class Perlin implements IModule2D {
 
 		// @formatter:off
 		return MathUtils.lerp(
-			MathUtils.lerp(top_left, top_right, u),
+			MathUtils.lerp(top_left,    top_right,    u),
 			MathUtils.lerp(bottom_left, bottom_right, u),
 			v
 		);

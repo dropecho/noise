@@ -11,6 +11,6 @@ class CheckerBoard implements IModule2D {
 		var intX = FastMath.floor(x * frequency);
 		var intY = FastMath.floor(y * frequency);
 
-		return ((intX + intY) % 2 == 0) ? 1 : -1;
+		return ((intX + intY) & 1) == 0 ? 1 : -1;
 	}
 }
