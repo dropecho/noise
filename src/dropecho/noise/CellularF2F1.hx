@@ -8,7 +8,7 @@ import dropecho.utils.FastMath;
  * the 2nd nearest cell center and the nearest cell center. Produces cracked, rocky, or
  * dried-mud surface patterns distinct from standard Worley F1 output.
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class CellularF2F1 implements IModule2D {
 	private static inline final halfUnitVec:F32 = 0.353553;
 

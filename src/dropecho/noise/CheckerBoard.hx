@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Checkerboard pattern generator. Returns 1 and -1 in alternating grid squares. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class CheckerBoard implements IModule2D {
 	public function new(frequency:F32 = 1);
 

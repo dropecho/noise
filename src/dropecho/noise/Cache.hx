@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Caches source module output to avoid redundant computation when the same coordinates are queried repeatedly by multiple consumers. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Cache implements IModule2D {
 	private var cache:haxe.ds.IntMap<haxe.ds.IntMap<F32>> = new haxe.ds.IntMap<haxe.ds.IntMap<F32>>();
 

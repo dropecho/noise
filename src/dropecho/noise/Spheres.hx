@@ -3,7 +3,7 @@ package dropecho.noise;
 import dropecho.utils.FastMath;
 
 /** Outputs concentric ring patterns based on radial distance from the origin. Rings peak at integer distances and trough at half-integer distances. */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Spheres implements IModule2D {
 	public function new(frequency:F32 = 1);
 

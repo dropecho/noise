@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import haxe.ds.Vector;
 import seedyrng.Random;
 import dropecho.noise.IModule2D;
 import dropecho.utils.FastMath;
@@ -10,7 +11,7 @@ import dropecho.utils.MathUtils;
  * and unit-circle gradient vectors. Supports multiple octaves for fractal detail, controlled by
  * lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
  */
-@:build(dropecho.utils.TypeBuildingMacros.autoConstruct())
+@:build(dropecho.macros.Constructor.fromArgs())
 class Perlin implements IModule2D {
 	static var random:Random = new Random(69420);
 
@@ -30,11 +31,13 @@ class Perlin implements IModule2D {
 		return val;
 	}
 
+	// haxe.ds.Vector compiles to a native array on C# (no Array wrapper indirection)
+	// and to a plain array on JS/Python.
 	private static final _gradAngles:Array<F32> = [for (_ in 0...256) random.random() * 2 * Math.PI];
-	private static final gradients_x:Array<F32> = [for (a in _gradAngles) Math.cos(a)];
-	private static final gradients_y:Array<F32> = [for (a in _gradAngles) Math.sin(a)];
+	private static final gradients_x:Vector<F32> = Vector.fromArrayCopy([for (a in _gradAngles) (Math.cos(a) : F32)]);
+	private static final gradients_y:Vector<F32> = Vector.fromArrayCopy([for (a in _gradAngles) (Math.sin(a) : F32)]);
 
-	private static final perm:Array<Int> = {
+	private static final perm:Vector<Int> = {
 		var arr = [for (i in 0...256) i];
 		var i = 255;
 		while (i > 0) {
@@ -44,7 +47,7 @@ class Perlin implements IModule2D {
 			arr[j] = tmp;
 			i--;
 		}
-		arr.concat(arr);
+		Vector.fromArrayCopy(arr.concat(arr));
 	};
 
 	private static inline function dot_prod_grid(x:F32, y:F32, ux:I32, uy:I32):F32 {
