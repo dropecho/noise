@@ -1,0 +1,7 @@
+# @install: lix --silent download "gh://github.com/vantreeseba/reflaxe.GDScript#b827c1e92b1388ef6a513594664e85f09f6b418a" into gdscript/1.0.0-beta/github/b827c1e92b1388ef6a513594664e85f09f6b418a
+-lib reflaxe
+-cp ${HAXE_LIBCACHE}/gdscript/1.0.0-beta/github/b827c1e92b1388ef6a513594664e85f09f6b418a/src/
+-D gdscript=1.0.0-beta
+-D gdscript
+-D retain-untyped-meta
+--macro gdcompiler.GDCompilerInit.Start()

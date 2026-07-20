@@ -1,0 +1,20 @@
+# Godot GDScript addon (reflaxe.GDScript, 1.0.0-beta)
+#
+# Compiles the whole library to GDScript 2.0. Each `dropecho.noise.*` class
+# becomes a global `class_name` script — the GDScript analog of the JS build's
+# global `@:expose` — so Godot code can call e.g. `Perlin.new(...).value(x, y)`.
+#
+# `-D generate_godot_plugin` makes the compiler also emit `plugin.cfg` and the
+# `@tool` EditorPlugin (`plugin.gd`) into the output dir, so it installs and
+# enables as a normal addon under Project Settings > Plugins. The library is
+# pure math (no Godot types), so no Godot bindings generator is needed.
+
+-lib gdscript
+
+-D generate_godot_plugin
+-D godot_plugin_name=dropecho.noise
+-D godot_plugin_description=A library of 2D noise generation tools.
+-D godot_plugin_author=vantreeseba
+-D godot_plugin_version=0.5.2
+
+-D gdscript-output=dist/godot/addons/dropecho_noise

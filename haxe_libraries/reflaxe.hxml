@@ -1,0 +1,5 @@
+# @install: lix --silent download "gh://github.com/vantreeseba/reflaxe#3e68bafedc38041e350a7f2a160b1d3ff1e4ac5d" into reflaxe/4.0.0-beta/github/3e68bafedc38041e350a7f2a160b1d3ff1e4ac5d
+-cp ${HAXE_LIBCACHE}/reflaxe/4.0.0-beta/github/3e68bafedc38041e350a7f2a160b1d3ff1e4ac5d/src/
+-D reflaxe=4.0.0-beta
+--macro nullSafety("reflaxe")
+--macro reflaxe.ReflectCompiler.Start()
