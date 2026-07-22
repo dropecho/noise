@@ -19,4 +19,5 @@ export declare class MathUtils {
 	static map(val: F32, fromMin: F32, fromMax: F32, toMin: F32, toMax: F32): F32
 	static inverseLerp(t: F32, a: F32, b: F32): F32
 	static clamp(val: F32, min: F32, max: F32): F32
+	static lowerBound(lo: number, hi: number, pred: ((arg0: number) => boolean)): number
 }

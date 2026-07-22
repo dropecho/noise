@@ -5,6 +5,11 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+* Classic Perlin gradient noise generator. Uses a seeded permutation table for 256-unit tiling
+* and unit-circle gradient vectors. Supports multiple octaves for fractal detail, controlled by
+* lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
+*/
 export const Perlin = Register.global("$hxClasses")["dropecho.noise.Perlin"] = 
 class Perlin extends Register.inherits() {
 	new(octaves, frequency, lacunarity, persistence) {
@@ -20,10 +25,10 @@ class Perlin extends Register.inherits() {
 		if (persistence == null) {
 			persistence = 0.5;
 		};
-		this.persistence = persistence;
 		this.octaves = octaves;
-		this.lacunarity = lacunarity;
 		this.frequency = frequency;
+		this.lacunarity = lacunarity;
+		this.persistence = persistence;
 	}
 	value(x, y) {
 		var val = 0;
@@ -35,8 +40,10 @@ class Perlin extends Register.inherits() {
 			++_g;
 			var x1 = x * f;
 			var y1 = y * f;
-			var X = (x1 >= 0) ? x1 | 0 : x1 - 1 | 0;
-			var Y = (y1 >= 0) ? y1 | 0 : y1 - 1 | 0;
+			var t = x1 | 0;
+			var X = (x1 < t) ? t - 1 : t;
+			var t1 = y1 | 0;
+			var Y = (y1 < t1) ? t1 - 1 : t1;
 			var i = Perlin.perm[Perlin.perm[X & 255] + (Y & 255) | 0];
 			var top_left = (x1 - X) * Perlin.gradients_x[i] + (y1 - Y) * Perlin.gradients_y[i];
 			var uy = Y + 1 | 0;
@@ -47,11 +54,11 @@ class Perlin extends Register.inherits() {
 			var ux1 = X + 1 | 0;
 			var uy1 = Y + 1 | 0;
 			var i3 = Perlin.perm[Perlin.perm[ux1 & 255] + (uy1 & 255) | 0];
-			var t = x1 - X;
-			var u = t * t * t * (t * (t * 6 - 15) + 10);
-			var t1 = y1 - Y;
+			var t2 = x1 - X;
+			var u = t2 * t2 * t2 * (t2 * (t2 * 6 - 15) + 10);
+			var t3 = y1 - Y;
 			var from = top_left + ((x1 - ux) * Perlin.gradients_x[i2] + (y1 - Y) * Perlin.gradients_y[i2] - top_left) * u;
-			val += (from + (bottom_left + ((x1 - ux1) * Perlin.gradients_x[i3] + (y1 - uy1) * Perlin.gradients_y[i3] - bottom_left) * u - from) * (t1 * t1 * t1 * (t1 * (t1 * 6 - 15) + 10))) * p;
+			val += (from + (bottom_left + ((x1 - ux1) * Perlin.gradients_x[i3] + (y1 - uy1) * Perlin.gradients_y[i3] - bottom_left) * u - from) * (t3 * t3 * t3 * (t3 * (t3 * 6 - 15) + 10))) * p;
 			f *= this.lacunarity;
 			p *= this.persistence;
 		};
@@ -62,8 +69,10 @@ class Perlin extends Register.inherits() {
 		return (x - ux) * Perlin.gradients_x[i] + (y - uy) * Perlin.gradients_y[i];
 	}
 	static noise2d(x, y) {
-		var X = (x >= 0) ? x | 0 : x - 1 | 0;
-		var Y = (y >= 0) ? y | 0 : y - 1 | 0;
+		var t = x | 0;
+		var X = (x < t) ? t - 1 : t;
+		var t = y | 0;
+		var Y = (y < t) ? t - 1 : t;
 		var i = Perlin.perm[Perlin.perm[X & 255] + (Y & 255) | 0];
 		var top_left = (x - X) * Perlin.gradients_x[i] + (y - Y) * Perlin.gradients_y[i];
 		var uy = Y + 1 | 0;
@@ -113,7 +122,7 @@ Perlin.gradients_x = (function($this) {var $r0
 		while (_g1 < _g2.length) _g.push(Math.cos(_g2[_g1++]));
 	};
 	
-	$r0 = _g
+	$r0 = _g.slice(0)
 	return $r0})(this)
 Perlin.gradients_y = (function($this) {var $r0
 	var _g = [];
@@ -123,7 +132,7 @@ Perlin.gradients_y = (function($this) {var $r0
 		while (_g1 < _g2.length) _g.push(Math.sin(_g2[_g1++]));
 	};
 	
-	$r0 = _g
+	$r0 = _g.slice(0)
 	return $r0})(this)
 Perlin.perm = (function($this) {var $r0
 	var _g = [];
@@ -140,5 +149,5 @@ Perlin.perm = (function($this) {var $r0
 		--i;
 	};
 	
-	$r0 = _g.concat(_g)
+	$r0 = _g.concat(_g).slice(0)
 	return $r0})(this)

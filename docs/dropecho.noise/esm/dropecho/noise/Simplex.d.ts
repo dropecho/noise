@@ -1,6 +1,12 @@
 import {I32, F32} from "../utils/FastMath"
 import {IModule2D} from "./IModule2D"
 
+/**
+* Simplex noise generator. `value()` uses a native 2D simplex (3 corners, 1 branch) for speed.
+* The static `noise()` 3D function is kept for Turbulence/FractalWarp which need independent
+* per-axis displacements via different z slices.
+* Supports multiple octaves for fractal detail.
+*/
 export declare class Simplex implements IModule2D {
 	constructor(octaves?: I32, frequency?: F32, lacunarity?: F32, persistence?: F32)
 	value(x: F32, y: F32): F32

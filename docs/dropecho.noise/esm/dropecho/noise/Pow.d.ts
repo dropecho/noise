@@ -1,12 +1,15 @@
+import {F32} from "../utils/FastMath"
 import {IModule2D} from "./IModule2D"
 
+/**
+Raises the first module's output to the power of the second module's output.
+*/
 export declare class Pow implements IModule2D {
 	constructor(input: IModule2D, input2: IModule2D)
-	value(x: number, y: number): number
+	value(x: F32, y: F32): F32
 	
 	/**
-	The IModule2D to get a value from.
-	Default: null
+	
 	*/
 	protected input: IModule2D
 	

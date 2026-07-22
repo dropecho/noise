@@ -2,6 +2,11 @@ import {Random} from "../../seedyrng/Random"
 import {I32, F32} from "../utils/FastMath"
 import {IModule2D} from "./IModule2D"
 
+/**
+* Classic Perlin gradient noise generator. Uses a seeded permutation table for 256-unit tiling
+* and unit-circle gradient vectors. Supports multiple octaves for fractal detail, controlled by
+* lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
+*/
 export declare class Perlin implements IModule2D {
 	constructor(octaves?: I32, frequency?: F32, lacunarity?: F32, persistence?: F32)
 	value(x: F32, y: F32): F32

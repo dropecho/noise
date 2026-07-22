@@ -3,11 +3,14 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Outputs the smaller of two source modules' values at each point.
+*/
 export const Min = Register.global("$hxClasses")["dropecho.noise.Min"] = 
 class Min extends Register.inherits() {
 	new(input, input2) {
-		this.input2 = input2;
 		this.input = input;
+		this.input2 = input2;
 	}
 	value(x, y) {
 		var a = this.input.value(x, y);

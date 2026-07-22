@@ -55,17 +55,19 @@ class FastMath {
 		return Math.sqrt(f);
 	}
 	static floor(f) {
-		if (f >= 0) {
-			return f | 0;
+		var t = f | 0;
+		if (f < t) {
+			return t - 1;
 		} else {
-			return f - 1 | 0;
+			return t;
 		};
 	}
 	static ceil(f) {
-		if (f >= 0) {
-			return f + 1 | 0;
+		var t = f | 0;
+		if (f > t) {
+			return t + 1;
 		} else {
-			return f | 0;
+			return t;
 		};
 	}
 	static round(f) {

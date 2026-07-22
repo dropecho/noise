@@ -3,6 +3,9 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Outputs concentric cylinder cross-section rings aligned along the x-axis. Produces parallel band patterns.
+*/
 export const Cylinders = Register.global("$hxClasses")["dropecho.noise.Cylinders"] = 
 class Cylinders extends Register.inherits() {
 	new(frequency) {
@@ -12,11 +15,13 @@ class Cylinders extends Register.inherits() {
 		this.frequency = frequency;
 	}
 	value(x, y) {
-		var f = Math.cos((x * this.frequency - ((x * this.frequency | 0) + 0.5)) * Math.PI * 2);
-		if (f >= 0) {
-			return f;
+		var f = x * this.frequency;
+		var t = f | 0;
+		var f1 = Math.cos((x * this.frequency - (((f < t) ? t - 1 : t) + 0.5)) * Math.PI * 2);
+		if (f1 >= 0) {
+			return f1;
 		} else {
-			return -f;
+			return -f1;
 		};
 	}
 	static get __name__() {

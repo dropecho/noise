@@ -9,13 +9,13 @@ class VectorMath {
 	static rand3(a, seed) {
 		var y = a.y | 0;
 		var z = a.z | 0;
-		var n = (((Int32._mul(a.x | 0, VectorMath.magicX) + Int32._mul(y, VectorMath.magicY) | 0) + Int32._mul(z, VectorMath.magicZ) | 0) + Int32._mul(seed, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(a.x | 0, 9167) + Int32._mul(y, 41179) | 0) + Int32._mul(z, 9167) | 0) + Int32._mul(seed, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		return 1.0 - (Int32._mul(n, b) & 2147483647) / 1073741824.0;
 	}
 	static rand3I32(x, y, z, seed) {
-		var n = (((Int32._mul(x, VectorMath.magicX) + Int32._mul(y, VectorMath.magicY) | 0) + Int32._mul(z, VectorMath.magicZ) | 0) + Int32._mul(seed, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(x, 9167) + Int32._mul(y, 41179) | 0) + Int32._mul(z, 9167) | 0) + Int32._mul(seed, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		return Int32._mul(n, b) & 2147483647;
@@ -23,17 +23,19 @@ class VectorMath {
 	static rand3dTo3d(a) {
 		var y = a.y | 0;
 		var z = a.z | 0;
-		var n = (((Int32._mul(a.x | 0, VectorMath.magicX) + Int32._mul(y, VectorMath.magicY) | 0) + Int32._mul(z, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(a.x | 0, 9167) + Int32._mul(y, 41179) | 0) + Int32._mul(z, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var rx = 1.0 - (Int32._mul(n, b) & 2147483647) / 1073741824.0;
 		var y = a.y | 0;
 		var z = a.z | 0;
-		var n = (((Int32._mul(a.x | 0, VectorMath.magicX) + Int32._mul(y, VectorMath.magicY) | 0) + Int32._mul(z, VectorMath.magicZ) | 0) + Int32._mul(1, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(a.x | 0, 9167) + Int32._mul(y, 41179) | 0) + Int32._mul(z, 9167) | 0) + Int32._mul(1, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var ry = 1.0 - (Int32._mul(n, b) & 2147483647) / 1073741824.0;
-		return new Vector3s(rx - ((rx >= 0) ? rx | 0 : rx - 1 | 0), ry - ((ry >= 0) ? ry | 0 : ry - 1 | 0), 0);
+		var t = rx | 0;
+		var t1 = ry | 0;
+		return new Vector3s(rx - ((rx < t) ? t - 1 : t), ry - ((ry < t1) ? t1 - 1 : t1), 0);
 	}
 	static add(a, b) {
 		return new Vector3s(a.x + b.x, a.y + b.y, a.z + b.z);
@@ -89,17 +91,10 @@ class VectorMath {
 		return new Vector3s(a.x * scalar, a.y * scalar, a.z * scalar);
 	}
 	static inverseSqrt(a) {
-		var number = a.x * a.x + a.y * a.y + a.z * a.z;
-		var y = number;
-		y = 1597463007 - ((number | 0) >> 1);
-		y *= 1.5 - number * 0.5 * y * y;
-		return y;
+		return 1.0 / Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 	}
 	static normalize(a) {
-		var number = a.x * a.x + a.y * a.y + a.z * a.z;
-		var y = number;
-		y = 1597463007 - ((number | 0) >> 1);
-		var scalar = y *= 1.5 - number * 0.5 * y * y;
+		var scalar = 1.0 / Math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 		return new Vector3s(a.x * scalar, a.y * scalar, a.z * scalar);
 	}
 	static dot(a, b) {
@@ -107,9 +102,12 @@ class VectorMath {
 	}
 	static floor(a) {
 		var f = a.x;
+		var t = f | 0;
 		var f1 = a.y;
+		var t1 = f1 | 0;
 		var f2 = a.z;
-		return new Vector3s((f >= 0) ? f | 0 : f - 1 | 0, (f1 >= 0) ? f1 | 0 : f1 - 1 | 0, (f2 >= 0) ? f2 | 0 : f2 - 1 | 0);
+		var t2 = f2 | 0;
+		return new Vector3s((f < t) ? t - 1 : t, (f1 < t1) ? t1 - 1 : t1, (f2 < t2) ? t2 - 1 : t2);
 	}
 	static randomUnitVector2() {
 		var theta = Math.random() * 2 * Math.PI;

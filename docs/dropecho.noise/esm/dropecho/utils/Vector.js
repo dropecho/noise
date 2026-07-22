@@ -76,9 +76,12 @@ class Vector3 {
 	}
 	static floor(this1) {
 		var f = this1.x;
+		var t = f | 0;
 		var f1 = this1.y;
+		var t1 = f1 | 0;
 		var f2 = this1.z;
-		return new Vector3s((f >= 0) ? f | 0 : f - 1 | 0, (f1 >= 0) ? f1 | 0 : f1 - 1 | 0, (f2 >= 0) ? f2 | 0 : f2 - 1 | 0);
+		var t2 = f2 | 0;
+		return new Vector3s((f < t) ? t - 1 : t, (f1 < t1) ? t1 - 1 : t1, (f2 < t2) ? t2 - 1 : t2);
 	}
 	static get __name__() {
 		return "dropecho.utils._Vector.Vector3_Impl_"

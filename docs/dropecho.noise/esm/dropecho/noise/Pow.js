@@ -3,11 +3,14 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Raises the first module's output to the power of the second module's output.
+*/
 export const Pow = Register.global("$hxClasses")["dropecho.noise.Pow"] = 
 class Pow extends Register.inherits() {
 	new(input, input2) {
-		this.input2 = input2;
 		this.input = input;
+		this.input2 = input2;
 	}
 	value(x, y) {
 		return Math.pow(this.input.value(x, y), this.input2.value(x, y));

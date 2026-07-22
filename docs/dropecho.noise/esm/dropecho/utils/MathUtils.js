@@ -14,7 +14,7 @@ class MathUtils {
 		var t = (0 < b) ? b : 0;
 		var a = 1 - t;
 		var a1 = 1 - t;
-		var val = a * a * a * p0 + 3 * (a1 * a1) * (t * t) * p1 + 3 * (1 - t) * (t * t) * p2 + t * t * t * p3;
+		var val = a * a * a * p0 + 3 * (a1 * a1) * t * p1 + 3 * (1 - t) * (t * t) * p2 + t * t * t * p3;
 		var b = (val < 1) ? val : 1;
 		if (0 < b) {
 			return b;
@@ -42,10 +42,10 @@ class MathUtils {
 		return Math.sin(k);
 	}
 	static mapEasing(val, fromMin, fromMax, toMin, toMax, easing) {
-		return easing(1 + (val - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
+		return toMin + easing((val - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
 	}
 	static map(val, fromMin, fromMax, toMin, toMax) {
-		return (1 + (val - fromMin) / (fromMax - fromMin)) * (toMax - toMin);
+		return toMin + (val - fromMin) / (fromMax - fromMin) * (toMax - toMin);
 	}
 	static inverseLerp(t, a, b) {
 		return (t - a) / (b - a);
@@ -57,6 +57,17 @@ class MathUtils {
 		} else {
 			return min;
 		};
+	}
+	static lowerBound(lo, hi, pred) {
+		while (lo < hi) {
+			var mid = lo + hi >> 1;
+			if (pred(mid)) {
+				hi = mid;
+			} else {
+				lo = mid + 1;
+			};
+		};
+		return lo;
 	}
 	static get __name__() {
 		return "dropecho.utils.MathUtils"

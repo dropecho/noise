@@ -3,6 +3,9 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Clamps the source module's output to a [min, max] range. Values outside the range are pinned to the nearest bound.
+*/
 export const Clamp = Register.global("$hxClasses")["dropecho.noise.Clamp"] = 
 class Clamp extends Register.inherits() {
 	new(input, min, max) {
@@ -12,9 +15,9 @@ class Clamp extends Register.inherits() {
 		if (max == null) {
 			max = 1;
 		};
+		this.input = input;
 		this.min = min;
 		this.max = max;
-		this.input = input;
 	}
 	value(x, y) {
 		var a = this.input.value(x, y);
