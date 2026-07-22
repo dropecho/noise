@@ -18,19 +18,17 @@ inline final MIN_F32:F32 = -3.40282347e+38;
 @:nativeGen
 class FastMath {
 	inline public static function ipow(a:F32, b:I32):F32 {
-		switch (b) {
-			case 1:
-				return a;
-			case 2:
-				return a * a;
-			case 3:
-				return a * a * a;
-			case 4:
-				return a * a * a * a;
-			case 5:
-				return a * a * a * a * a;
-			case _:
-				throw 'ipow can only do 1-5 for exp.';
+		// Written as a switch expression (single return) rather than a return in
+		// each arm: the GDScript target only appends a fallback return when the
+		// whole body is unreachable, so a switch whose default throws would emit
+		// a match with no trailing return and fail "not all code paths return".
+		return switch (b) {
+			case 1: a;
+			case 2: a * a;
+			case 3: a * a * a;
+			case 4: a * a * a * a;
+			case 5: a * a * a * a * a;
+			case _: throw 'ipow can only do 1-5 for exp.';
 		}
 	}
 
