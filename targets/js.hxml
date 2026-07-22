@@ -1,11 +1,6 @@
--lib hxnodejs
--lib format
--lib seedyrng
+# JavaScript (CommonJS)
 
+-D dce=full
 -D js-es=6
 
--cp src
-
-# OUTPUT 
---main dropecho.Main
--js dist/js/node.js 
+-js dist/js/cjs/dropecho.noise.js

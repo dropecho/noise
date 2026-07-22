@@ -1,0 +1,8 @@
+# C# (.dll)
+
+-D dce=no
+-D dll_import
+-D no-root
+-D dll
+
+-cs dist/cs/com.dropecho.noise

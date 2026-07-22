@@ -1,28 +1,37 @@
 -cp src
 -cp test
 
+# Test libraries. `dropecho.testing` auto-discovers every `*Tests.hx` class on
+# the classpath and injects the `--main` entry point itself, so none is set here.
 -lib seedyrng
 -lib dropecho.testing
 -lib utest
 -lib dropecho.macros
+
 -D analyzer-optimize
 -D analyzer-user-var-fusion
 -w -WDeprecated
 
+# Compile the whole library so coverage sees every module, not just what the
+# tests reach.
 --macro include('', true, null, ['src'])
 
 --each
 
+# JS (Node)
 --next
 -lib hxnodejs
 -D js-es=6
 -js artifacts/js_test.cjs
 
- --next
--D unsafe
--D net-ver=50
--cs artifacts/cs_test
+# C# target disabled for now — the Haxe C# target is in flux upstream.
+# -D unsafe is required: the hxcs std library uses unsafe pointers.
+# --next
+# -D unsafe
+# -D net-ver=50
+# -cs artifacts/cs_test
 
+# Python
 --next
 -python artifacts/py_test.py
 
