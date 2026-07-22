@@ -45,7 +45,23 @@
         "additionalFiles": []
       }
     ],
-    "@semantic-release/github",
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "haxe build-godot.hxml -D godot_plugin_version=${nextRelease.version} && cp -R godot/addon/. dist/godot/addons/dropecho_noise/ && (cd dist/godot && zip -qr ../dropecho.noise-godot-${nextRelease.version}.zip addons)"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "dist/dropecho.noise-godot-*.zip",
+            "label": "Godot addon (dropecho.noise ${nextRelease.version}) — extract addons/ into your project"
+          }
+        ]
+      }
+    ],
     [
       "@semantic-release/git",
       {
