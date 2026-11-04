@@ -24,9 +24,10 @@ class Bench {
 		for (c in cases()) {
 			if (filter != null && !filter.match(c.name)) continue;
 			var r = measure(c.module, sample);
-			var b = measure(c.module, sampleBatch);
-			var match = b.checksum == r.checksum ? "" : '  BATCH MISMATCH ${b.checksum}';
-			Sys.println('${pad(c.name, 28)}${pad(ms(r.ms), 10)}${r.checksum}/${scatter(c.module)}  batch ${ms(b.ms)}$match');
+			var rows = measure(c.module, sampleRows);
+			var g = measure(c.module, sampleBatch);
+			var match = rows.checksum == r.checksum && g.checksum == r.checksum ? "" : '  BATCH MISMATCH ${rows.checksum} ${g.checksum}';
+			Sys.println('${pad(c.name, 28)}${pad(ms(r.ms), 10)}${r.checksum}/${scatter(c.module)}  rows ${ms(rows.ms)} grid ${ms(g.ms)}$match');
 		}
 	}
 
@@ -66,6 +67,22 @@ class Bench {
 		if (batchOut == null) batchOut = new haxe.ds.Vector<F32>(SIZE * SIZE);
 		var step:F32 = SPAN / SIZE;
 		Batch.grid(module, batchOut, 0, 0, step, SIZE, SIZE);
+		var sum:Float = 0;
+		for (i in 0...SIZE * SIZE) {
+			sum += batchOut[i];
+		}
+		return sum;
+	}
+
+	// One batch per row, for comparison with the grid path.
+	static function sampleRows(module:IModule2D):Float {
+		if (batchOut == null) batchOut = new haxe.ds.Vector<F32>(SIZE * SIZE);
+		var step:F32 = SPAN / SIZE;
+		var coords = new haxe.ds.Vector<F32>(SIZE);
+		for (i in 0...SIZE) {
+			coords[i] = 0 + i * step;
+		}
+		Batch.gridByRows(module, batchOut, coords, SIZE, coords, SIZE);
 		var sum:Float = 0;
 		for (i in 0...SIZE * SIZE) {
 			sum += batchOut[i];
