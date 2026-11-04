@@ -3,6 +3,9 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Scales input coordinates by a scalar before sampling the source module. Equivalent to multiplying the source module's frequency.
+*/
 export const Scale = Register.global("$hxClasses")["dropecho.noise.Scale"] = 
 class Scale extends Register.inherits() {
 	new(input, s) {

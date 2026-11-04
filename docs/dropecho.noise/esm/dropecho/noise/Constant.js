@@ -3,6 +3,9 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+Always outputs the same constant value regardless of coordinates. Useful as a fixed input to combiners and selectors.
+*/
 export const Constant = Register.global("$hxClasses")["dropecho.noise.Constant"] = 
 class Constant extends Register.inherits() {
 	new(constant) {

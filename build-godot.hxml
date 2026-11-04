@@ -1,0 +1,94 @@
+# Godot addon build — kept separate from build.hxml on purpose.
+#
+# reflaxe.GDScript is a beta target, so it stays out of the stable npm/haxelib
+# release path (build.hxml). Run it on its own: `haxe build-godot.hxml`.
+#
+# UNBLOCKED: reflaxe.GDScript 1.0.0-beta miscompiled this library several ways
+# (see upstream-issues.md); all are fixed in github-pinned forks, wired in via
+# the haxe_libraries/{reflaxe,gdscript}.hxml lix pins:
+#   - crash on the generators                          (reflaxe fork)
+#   - colliding de-shadowed constructor params         (reflaxe fork)
+#   - invalid GDScript for array-comprehension tables   (reflaxe.GDScript fork)
+#   - haxe.ds.Vector emits invalid `this1.size() = length` (reflaxe.GDScript fork)
+#   - haxe.UInt emitted as the literal type `UInt`      (reflaxe.GDScript fork)
+#   - float `%` emitted verbatim (GDScript rejects it)  (reflaxe.GDScript fork)
+#   - `and`/`or`/`not` used as identifiers unescaped    (reflaxe.GDScript fork)
+#   - static tables never initialized in the editor      (reflaxe.GDScript fork)
+#     (Godot skips _static_init() for non-tool scripts in the editor; the fork
+#     now emits `@tool` on classes with static state so it runs there too)
+#   - locals declared without an initializer were untyped (reflaxe.GDScript fork)
+#     (the sanitizer's temps — `var tempI32` then assigned in the block below —
+#     were Variant; 362 of them across the addon, now 12. Output is verified
+#     identical, but benchmarking showed no measurable speedup — see issue 6)
+#   - `Vector<Int>` fields emitted `Array[Variant]`  (reflaxe.GDScript fork)
+#     (parameterized typedefs dropped their type arguments; fixing that alone
+#     broke `_static_init()` at runtime, because GDScript's typed arrays are
+#     invariant and `Vector.fromArrayCopy` returns an untyped Array. The working
+#     fix also marks the Vector helpers `inline`, which removes the generic call
+#     so the element type survives. Worth ~21% on sampling — see issue 5)
+#
+# NOTE: issues 5–7 are performance work, and the first attempt at issue 5 shipped
+# GDScript that compiled and read correctly but broke the addon at runtime.
+# Benchmark and run in Godot before believing any perf change here.
+#
+# Two more fixes live outside the forks:
+#   - The `@:coreApi` std overrides (Array/String/Std/Reflect/StringTools) must
+#     be on the real classpath — see the -cp block below.
+#   - Macro-only classes leaking into runtime output were fixed in dropecho.macros
+#     (#if macro guards), github-pinned via haxe_libraries/dropecho.macros.hxml.
+# This build completes and emits valid GDScript, so the addon loads in Godot.
+
+# reflaxe.GDScript standard-library overrides.
+#
+# reflaxe.GDScript ships GDScript-specific overrides of core Haxe types in
+# `std/` and `std/gdscript/_std/` (e.g. an `@:coreApi extern Array` whose
+# `@:nativeName("push_back")`/`@:nativeName("size()")` map `.push()`→`.push_back()`
+# and `.length`→`.size()`, plus String, Std, Reflect, StringTools). These are
+# declared in the lib's `haxelib.json` under `reflaxe.stdPaths` and are put on
+# the classpath by the canonical `haxelib run reflaxe build`. lix only knows a
+# lib's `classPath` (`src/`), so it does NOT propagate `stdPaths` into the
+# generated `haxe_libraries/gdscript.hxml` wrapper. And core types like Array/
+# String are bound at compiler boot, before init macros run, so the fork's
+# `registerStdPaths()` (init-macro `Compiler.addClassPath`) is too late for them
+# (it still works for lazily-resolved plain classes like haxe.Exception).
+#
+# So the std overrides MUST be on the real command-line classpath here. The path
+# mirrors the pinned commit in `haxe_libraries/gdscript.hxml`; when re-pinning
+# the gdscript fork, update the hash in BOTH files.
+-cp ${HAXE_LIBCACHE}/gdscript/1.0.0-beta/github/b827c1e92b1388ef6a513594664e85f09f6b418a/std
+-cp ${HAXE_LIBCACHE}/gdscript/1.0.0-beta/github/b827c1e92b1388ef6a513594664e85f09f6b418a/std/gdscript/_std
+
+# GDScript-only std shadows. seedyrng.Random.nextFullInt does a 16-bit rotate
+# that assumes Haxe `Int` is 32-bit (the `<< 16` overflow must drop the top
+# bits); GDScript's `int` is 64-bit, so `random()` returns out-of-[0,1) values
+# that index the permutation table out of bounds and freeze Godot. This shadow
+# masks the rotate to 32 bits. It can't be fixed in the reflaxe forks without
+# breaking haxe.Int64 (both are `Int` << at the operator level). Must use an
+# init-macro addClassPath — lix hoists `-lib` classpaths ahead of command-line
+# `-cp`, so a plain `-cp godot-overrides` would lose to the real seedyrng.
+--macro addClassPath('godot-overrides')
+
+# Source class path.
+-cp src
+
+# Godot-build-only tooling macros.
+-cp tools
+
+# Pull every module under src/ into the build (not just those reachable from a
+# -main), so the whole library is compiled with no entry point — same trick the
+# stable build uses.
+--macro include('dropecho', true, null, ['src'])
+
+# Set every emitted GDScript `class_name` to match its package-derived filename
+# (e.g. `dropecho_Perlin`), so the global class names don't collide with Godot
+# built-ins (e.g. `Curve`) or other addons. Only the class identifier is set;
+# filenames are unaffected. JS/C# builds never see this (it lives here, not in
+# build.hxml).
+--macro addGlobalMetadata('dropecho', '@:build(GdNamespace.stamp())', true, true, false)
+
+# Library dependencies (shared with build.hxml).
+-lib format
+-lib seedyrng
+-lib dropecho.macros
+
+targets/gdscript.hxml

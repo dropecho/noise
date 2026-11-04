@@ -1,0 +1,11 @@
+# JavaScript (ES module)
+#
+# genes emits an ES module plus .d.ts typings. Do NOT set `-D js-es` here: it
+# conflicts with genes and corrupts the output.
+
+-lib genes
+
+-D dce=no
+-D dts
+
+-js dist/js/esm/index.js

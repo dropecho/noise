@@ -4,6 +4,10 @@ import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+* "Billowy" turbulent noise — absolute value of octaved Perlin noise.
+* Resembles rolling storm clouds or rounded hills. Output is always >= 0.
+*/
 export const Billow = Register.global("$hxClasses")["dropecho.noise.Billow"] = 
 class Billow extends Register.inherits() {
 	new(octaves, frequency, lacunarity, persistence) {
@@ -19,10 +23,10 @@ class Billow extends Register.inherits() {
 		if (persistence == null) {
 			persistence = 0.5;
 		};
-		this.persistence = persistence;
 		this.octaves = octaves;
-		this.lacunarity = lacunarity;
 		this.frequency = frequency;
+		this.lacunarity = lacunarity;
+		this.persistence = persistence;
 	}
 	value(x, y) {
 		var val = 0;
@@ -34,8 +38,10 @@ class Billow extends Register.inherits() {
 			++_g;
 			var x1 = x * currentFrequency;
 			var y1 = y * currentFrequency;
-			var X = (x1 >= 0) ? x1 | 0 : x1 - 1 | 0;
-			var Y = (y1 >= 0) ? y1 | 0 : y1 - 1 | 0;
+			var t = x1 | 0;
+			var X = (x1 < t) ? t - 1 : t;
+			var t1 = y1 | 0;
+			var Y = (y1 < t1) ? t1 - 1 : t1;
 			var i = Perlin.perm[Perlin.perm[X & 255] + (Y & 255) | 0];
 			var top_left = (x1 - X) * Perlin.gradients_x[i] + (y1 - Y) * Perlin.gradients_y[i];
 			var uy = Y + 1 | 0;
@@ -46,11 +52,11 @@ class Billow extends Register.inherits() {
 			var ux1 = X + 1 | 0;
 			var uy1 = Y + 1 | 0;
 			var i3 = Perlin.perm[Perlin.perm[ux1 & 255] + (uy1 & 255) | 0];
-			var t = x1 - X;
-			var u = t * t * t * (t * (t * 6 - 15) + 10);
-			var t1 = y1 - Y;
+			var t2 = x1 - X;
+			var u = t2 * t2 * t2 * (t2 * (t2 * 6 - 15) + 10);
+			var t3 = y1 - Y;
 			var from = top_left + ((x1 - ux) * Perlin.gradients_x[i2] + (y1 - Y) * Perlin.gradients_y[i2] - top_left) * u;
-			val += (from + (bottom_left + ((x1 - ux1) * Perlin.gradients_x[i3] + (y1 - uy1) * Perlin.gradients_y[i3] - bottom_left) * u - from) * (t1 * t1 * t1 * (t1 * (t1 * 6 - 15) + 10))) * currentAmplitude;
+			val += (from + (bottom_left + ((x1 - ux1) * Perlin.gradients_x[i3] + (y1 - uy1) * Perlin.gradients_y[i3] - bottom_left) * u - from) * (t3 * t3 * t3 * (t3 * (t3 * 6 - 15) + 10))) * currentAmplitude;
 			currentAmplitude *= this.persistence;
 			currentFrequency *= this.lacunarity;
 		};

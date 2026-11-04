@@ -1,6 +1,10 @@
 import {I32, F32} from "../utils/FastMath"
 import {IModule2D} from "./IModule2D"
 
+/**
+* "Billowy" turbulent noise — absolute value of octaved Perlin noise.
+* Resembles rolling storm clouds or rounded hills. Output is always >= 0.
+*/
 export declare class Billow implements IModule2D {
 	constructor(octaves?: I32, frequency?: F32, lacunarity?: F32, persistence?: F32)
 	value(x: F32, y: F32): F32

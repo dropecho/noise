@@ -1,44 +1,30 @@
+# Shared options — everything before `--each` is applied to every target below.
+
+# Source class path.
 -cp src
+
+# Expose every type under `dropecho` to JavaScript (sets `@:expose` globally) and
+# pull every module under src/ into the build (not just those reachable from a
+# -main), so the whole library is compiled regardless of target entry point.
 --macro addGlobalMetadata('dropecho', '@:expose', true, true)
 --macro include('dropecho', true, null, ['src'])
-# --macro keep('dropecho', [], true)
+
+# Library dependencies.
 -lib format
 -lib seedyrng
 -lib dropecho.macros
 
+# Optimize the generated code.
 -D analyzer-optimize
 -D analyzer-user-var-fusion
 
+# Apply everything above to each of the targets that follow.
 --each
 
-## JS
-# DEFINES / MACROS
--D dce=full
--D js-es=6
-
-# OUTPUT 
--js dist/js/cjs/dropecho.noise.js 
-
+# Each target's options live in its own hxml under targets/.
+targets/js.hxml
 --next
-## JS ESM module
-# LIBRARIES
--lib genes
-
-# DEFINES
--D dce=no
--D dts
-
-# OUTPUT 
--js dist/js/esm/index.js 
-
---next
-# C#
-# DEFINES / MACROS
--D dce=no
--D dll_import
--D no-root
--D dll
-
-# OUTPUT
--cs dist/cs/com.dropecho.noise
-
+targets/js-esm.hxml
+# C# target disabled for now — the Haxe C# target is in flux upstream.
+# --next
+# targets/cs.hxml

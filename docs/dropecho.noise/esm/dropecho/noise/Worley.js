@@ -1,10 +1,13 @@
 import {Int32} from "../../haxe/Int32.js"
 import {Register} from "../../genes/Register.js"
-import {VectorMath} from "../utils/VectorMath.js"
 import {IModule2D} from "./IModule2D.js"
 
 const $global = Register.$global
 
+/**
+* Worley (F1 cellular) noise generator. Returns the Euclidean distance to the nearest
+* jittered cell center, scaled to approximately [-1, 1]. Produces a bubbly or cobblestone look.
+*/
 export const Worley = Register.global("$hxClasses")["dropecho.noise.Worley"] = 
 class Worley extends Register.inherits() {
 	new(frequency) {
@@ -13,16 +16,18 @@ class Worley extends Register.inherits() {
 	value(x, y) {
 		x *= this.frequency;
 		y *= this.frequency;
-		var ix = (x >= 0) ? x | 0 : x - 1 | 0;
-		var iy = (y >= 0) ? y | 0 : y - 1 | 0;
+		var t = x | 0;
+		var ix = (x < t) ? t - 1 : t;
+		var t = y | 0;
+		var iy = (y < t) ? t - 1 : t;
 		var minDistSq = 3.40282347e+38;
 		var cellX = -1 + ix | 0;
 		var cellY = -1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -33,11 +38,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = -1 + ix | 0;
 		var cellY = iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -48,11 +53,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = -1 + ix | 0;
 		var cellY = 1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -63,11 +68,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = ix | 0;
 		var cellY = -1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -78,11 +83,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = ix | 0;
 		var cellY = iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -93,11 +98,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = ix | 0;
 		var cellY = 1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -108,11 +113,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = 1 + ix | 0;
 		var cellY = -1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -123,11 +128,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = 1 + ix | 0;
 		var cellY = iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
@@ -138,11 +143,11 @@ class Worley extends Register.inherits() {
 		};
 		var cellX = 1 + ix | 0;
 		var cellY = 1 + iy | 0;
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(0, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(0, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var jx = 0.353553 * ((Int32._mul(n, b) & 2147483647) / 1073741824.0 - 1.0);
-		var n = (((Int32._mul(cellX, VectorMath.magicX) + Int32._mul(cellY, VectorMath.magicY) | 0) + Int32._mul(1, VectorMath.magicZ) | 0) + Int32._mul(0, VectorMath.magicS) | 0) & 2147483647;
+		var n = (((Int32._mul(cellX, 9167) + Int32._mul(cellY, 41179) | 0) + Int32._mul(1, 9167) | 0) + Int32._mul(0, 4819) | 0) & 2147483647;
 		n = n >> 13 ^ n;
 		var b = Int32._mul(n, n);
 		var dx = x - (cellX + jx);
