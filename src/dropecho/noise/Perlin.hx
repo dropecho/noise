@@ -12,7 +12,7 @@ import dropecho.utils.MathUtils;
  * lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Perlin implements IModule2D {
+class Perlin implements IBatchModule2D {
 	static var random:Random = new Random(69420);
 
 	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
@@ -29,6 +29,70 @@ class Perlin implements IModule2D {
 		}
 
 		return val;
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		for (i in 0...count) {
+			out[i] = 0;
+		}
+		var row = Batch.isRow(ys, count);
+		var f:F32 = this.frequency;
+		var p:F32 = 1;
+
+		for (_ in 0...this.octaves) {
+			if (row) {
+				addRow(out, xs, ys[0] * f, count, f, p);
+			} else {
+				for (i in 0...count) {
+					out[i] += noise2d(xs[i] * f, ys[i] * f) * p;
+				}
+			}
+			f *= this.lacunarity;
+			p *= this.persistence;
+		}
+	}
+
+	/**
+	 * Adds one octave along a row: out[i] += noise2d(xs[i] * f, y) * p.
+	 * Same arithmetic as noise2d, but the row's terms are computed once per row
+	 * and the corner gradients once per cell instead of once per point.
+	 */
+	static function addRow(out:Vector<F32>, xs:Vector<F32>, y:F32, count:Int, f:F32, p:F32):Void {
+		final Y:I32 = FastMath.floor(y);
+		final dy:F32 = y - Y;
+		final dy1:F32 = y - (Y + 1);
+		final top = Y & 255;
+		final bottom = (Y + 1) & 255;
+		final v = MathUtils.fade(dy);
+
+		var cellX:I32 = 0;
+		var haveCell = false;
+		var tl = 0, bl = 0, tr = 0, br = 0;
+
+		for (i in 0...count) {
+			final x:F32 = xs[i] * f;
+			final X:I32 = FastMath.floor(x);
+			if (!haveCell || X != cellX) {
+				haveCell = true;
+				cellX = X;
+				final left = perm[X & 255];
+				final right = perm[(X + 1) & 255];
+				tl = perm[left + top];
+				bl = perm[left + bottom];
+				tr = perm[right + top];
+				br = perm[right + bottom];
+			}
+			final dx:F32 = x - X;
+			final dx1:F32 = x - (X + 1);
+
+			var top_left     = corner(tl, dx,  dy);
+			var bottom_left  = corner(bl, dx,  dy1);
+			var top_right    = corner(tr, dx1, dy);
+			var bottom_right = corner(br, dx1, dy1);
+
+			var u = MathUtils.fade(dx);
+			out[i] += MathUtils.lerp(MathUtils.lerp(top_left, top_right, u), MathUtils.lerp(bottom_left, bottom_right, u), v) * p;
+		}
 	}
 
 	// haxe.ds.Vector compiles to a native array on C# (no Array wrapper indirection)
