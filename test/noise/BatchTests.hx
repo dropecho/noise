@@ -63,6 +63,9 @@ class BatchTests extends utest.Test {
 			{name: "Turbulence", module: new Turbulence(perlin, 0.5, 2)},
 			{name: "FractalWarp", module: new FractalWarp(perlin, 0.5, 2, 3)},
 			{name: "Blend", module: new Blend(perlin, simplex, wide)},
+			// Every point uses both inputs, then only one: the whole-grid and skipped paths.
+			{name: "Blend half", module: new Blend(perlin, simplex, new Constant(0.5))},
+			{name: "Blend all from", module: new Blend(perlin, simplex, new Constant(-1))},
 			{name: "Select hard", module: new Select(perlin, simplex, wide, 0.5, 0)},
 			{name: "Select falloff", module: new Select(perlin, simplex, wide, 0.5, 0.8)},
 			{name: "nested", module: new Clamp(new Add(new TranslatePoint(new Perlin(2, 1), 3.3, 0.1), perlin), -0.5, 0.5)},

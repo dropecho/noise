@@ -10,7 +10,7 @@ import dropecho.utils.FastMath;
  * Supports multiple octaves for fractal detail.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Simplex implements IBatchModule2D {
+class Simplex implements IGridModule2D {
 	/**
 	 * @param octaves The number of octaves in the noise (how many "layers").
 	 * @param frequency The frequency of the base noise layer.
@@ -133,6 +133,16 @@ class Simplex implements IBatchModule2D {
 		// A direct call per point, so the JIT can inline it; no shared per-row work here.
 		for (i in 0...count) {
 			out[i] = value(xs[i], ys[i]);
+		}
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		for (j in 0...height) {
+			var y = ys[j];
+			var base = j * width;
+			for (i in 0...width) {
+				out[base + i] = value(xs[i], y);
+			}
 		}
 	}
 }

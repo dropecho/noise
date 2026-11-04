@@ -162,21 +162,30 @@ class Perlin implements IGridModule2D {
 	}
 
 	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		fractalGrid(out, xs, width, ys, height, octaves, frequency, lacunarity, persistence);
+	}
+
+	/**
+	 * Fills a grid with the same octave sum as Perlin.value, computing each column's
+	 * terms once per octave and each row's once per row. Shared by Perlin, Billow and Ridged.
+	 */
+	@:allow(dropecho.noise)
+	static function fractalGrid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int, octaves:I32, frequency:F32,
+			lacunarity:F32, persistence:F32):Void {
 		var count = width * height;
 		for (k in 0...count) {
 			out[k] = 0;
 		}
 		// Per-column terms, computed once per octave for the whole grid.
-		var colX = new Vector<I32>(width);
 		var colDx = new Vector<F32>(width);
 		var colDx1 = new Vector<F32>(width);
 		var colU = new Vector<F32>(width);
 		var colLeft = new Vector<Int>(width);
 		var colRight = new Vector<Int>(width);
 
-		var f:F32 = this.frequency;
+		var f:F32 = frequency;
 		var p:F32 = 1;
-		for (_ in 0...this.octaves) {
+		for (_ in 0...octaves) {
 			for (i in 0...width) {
 				final x:F32 = xs[i] * f;
 				final X:I32 = FastMath.floor(x);
@@ -209,8 +218,8 @@ class Perlin implements IGridModule2D {
 					out[base + i] += MathUtils.lerp(MathUtils.lerp(top_left, top_right, u), MathUtils.lerp(bottom_left, bottom_right, u), v) * p;
 				}
 			}
-			f *= this.lacunarity;
-			p *= this.persistence;
+			f *= lacunarity;
+			p *= persistence;
 		}
 	}
 }

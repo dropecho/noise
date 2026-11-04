@@ -5,7 +5,7 @@ import dropecho.utils.FastMath;
 
 /** Outputs a concentric cone cross-section pattern — radial distance from each cell center mapped to a tent-shaped peak. */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Cones implements IBatchModule2D {
+class Cones implements IGridModule2D {
 	public function new(frequency:F32 = 1);
 
 	public function value(x:F32, y:F32):F32 {
@@ -23,6 +23,16 @@ class Cones implements IBatchModule2D {
 		// A direct call per point, so the JIT can inline it; no shared per-row work here.
 		for (i in 0...count) {
 			out[i] = value(xs[i], ys[i]);
+		}
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		for (j in 0...height) {
+			var y = ys[j];
+			var base = j * width;
+			for (i in 0...width) {
+				out[base + i] = value(xs[i], y);
+			}
 		}
 	}
 }

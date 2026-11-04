@@ -24,9 +24,7 @@ class Add implements IGridModule2D {
 	}
 
 	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
-		var other = new Vector<F32>(width * height);
-		Batch.gridValues(input, out, xs, width, ys, height);
-		Batch.gridValues(input2, other, xs, width, ys, height);
+		var other = Batch.bothGrid(input, input2, out, xs, width, ys, height);
 		for (k in 0...width * height) {
 			out[k] = combine(out[k], other[k]);
 		}

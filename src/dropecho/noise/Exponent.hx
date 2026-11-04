@@ -8,7 +8,7 @@ import dropecho.utils.FastMath;
  * exp > 1 sharpens peaks and pushes midtones toward -1; exp < 1 flattens and pushes toward +1.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Exponent implements IBatchModule2D {
+class Exponent implements IGridModule2D {
 	public function new(input:IModule2D, exp:F32 = 1);
 
 	public function value(x:F32, y:F32):F32 {
@@ -24,5 +24,12 @@ class Exponent implements IBatchModule2D {
 
 	private inline function apply(v:F32):F32 {
 		return FastMath.pow((v + 1.0) / 2.0, exp) * 2.0 - 1.0;
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		Batch.gridValues(input, out, xs, width, ys, height);
+		for (k in 0...width * height) {
+			out[k] = apply(out[k]);
+		}
 	}
 }

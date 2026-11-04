@@ -10,7 +10,7 @@ import dropecho.utils.MathUtils;
  * using a 5th-order fade curve. Outside that region the selection is hard.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Select implements IBatchModule2D {
+class Select implements IGridModule2D {
 	public function new(a:IModule2D, b:IModule2D, control:IModule2D, threshold:F32 = 0, falloff:F32 = 0);
 
 	public function value(x:F32, y:F32):F32 {
@@ -38,5 +38,14 @@ class Select implements IBatchModule2D {
 		if (cv < lo) return 0;
 		if (cv > hi) return 1;
 		return MathUtils.fade((cv - lo) / (falloff * 2));
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		var weights = new Vector<F32>(width * height);
+		Batch.gridValues(control, weights, xs, width, ys, height);
+		for (k in 0...width * height) {
+			weights[k] = weight(weights[k]);
+		}
+		Batch.lerpByWeightGrid(a, b, weights, out, xs, width, ys, height);
 	}
 }

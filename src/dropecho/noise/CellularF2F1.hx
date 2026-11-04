@@ -10,7 +10,7 @@ import dropecho.utils.FastMath;
  * dried-mud surface patterns distinct from standard Worley F1 output.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class CellularF2F1 implements IBatchModule2D {
+class CellularF2F1 implements IGridModule2D {
 	private static inline final halfUnitVec:F32 = 0.353553;
 
 	public function new(frequency:F32);
@@ -60,6 +60,16 @@ class CellularF2F1 implements IBatchModule2D {
 		// A direct call per point, so the JIT can inline it; no shared per-row work here.
 		for (i in 0...count) {
 			out[i] = value(xs[i], ys[i]);
+		}
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		for (j in 0...height) {
+			var y = ys[j];
+			var base = j * width;
+			for (i in 0...width) {
+				out[base + i] = value(xs[i], y);
+			}
 		}
 	}
 }

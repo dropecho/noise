@@ -5,7 +5,7 @@ import dropecho.utils.FastMath;
 
 /** Outputs the larger of two source modules' values at each point. */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Max implements IBatchModule2D {
+class Max implements IGridModule2D {
 	/**
 	 * @param input The IModule2D to get a value from. 
 	 * @param input2 The IModule2D to get a value from. 
@@ -25,5 +25,12 @@ class Max implements IBatchModule2D {
 
 	private inline function combine(a:F32, b:F32):F32 {
 		return FastMath.max(a, b);
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		var other = Batch.bothGrid(input, input2, out, xs, width, ys, height);
+		for (k in 0...width * height) {
+			out[k] = combine(out[k], other[k]);
+		}
 	}
 }

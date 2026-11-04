@@ -10,7 +10,7 @@ typedef ControlPoint = {
 }
 
 /** Maps source module output to discrete stepped values using [min, max, val] control points. Values that fall in a control point's range are snapped to its val; others pass through unchanged. */
-class Terrace implements IBatchModule2D {
+class Terrace implements IGridModule2D {
 	var input:IModule2D;
 
 	// Control points unpacked into parallel vectors: anonymous-structure field access
@@ -59,5 +59,12 @@ class Terrace implements IBatchModule2D {
 		}
 
 		return v;
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		Batch.gridValues(input, out, xs, width, ys, height);
+		for (k in 0...width * height) {
+			out[k] = map(out[k]);
+		}
 	}
 }
