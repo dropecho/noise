@@ -13,14 +13,20 @@ class Simplex2D {
 	static inline final G2:F32 = 0.21132486540518713;  // (3-sqrt(3))/6
 	static inline final G2x2:F32 = 0.4226497308103742; // 2*G2
 
-	// Reuses Simplex's perm table via a delegating call to avoid duplicating state.
+	// The 8 gradient directions as lookup tables. A switch on the gradient index
+	// branches unpredictably at high frequencies; multiplying by 0 or +-1 is exact.
+	private static final gradX:Vector<F32> = Vector.fromArrayCopy(([1, -1, 0, 0, 1, -1, 1, -1] : Array<F32>));
+	private static final gradY:Vector<F32> = Vector.fromArrayCopy(([0, 0, 1, -1, 1, 1, -1, -1] : Array<F32>));
+
 	private static inline function dot2(gi:Int, x:F32, y:F32):F32 {
-		return switch (gi) {
-			case 0: x;         case 1: -x;
-			case 2: y;         case 3: -y;
-			case 4: x + y;     case 5: -x + y;
-			case 6: x - y;     default: -x - y;
-		}
+		return gradX[gi] * x + gradY[gi] * y;
+	}
+
+	// A corner's contribution: zero outside its radius, so no branch is needed.
+	private static inline function corner(gi:Int, x:F32, y:F32):F32 {
+		var t:F32 = FastMath.max(0.5 - x * x - y * y, 0);
+		t *= t;
+		return t * t * dot2(gi, x, y);
 	}
 
 	public static function noise(xin:F32, yin:F32):F32 {
@@ -46,18 +52,7 @@ class Simplex2D {
 		var gi1:I32 = perm[ii + i1 + perm[jj + j1]] & 7;
 		var gi2:I32 = perm[ii + 1 + perm[jj + 1]] & 7;
 
-		var n0:F32, n1:F32, n2:F32;
-
-		var t0:F32 = 0.5 - x0 * x0 - y0 * y0;
-		if (t0 < 0) { n0 = 0.0; } else { t0 *= t0; n0 = t0 * t0 * dot2(gi0, x0, y0); }
-
-		var t1:F32 = 0.5 - x1 * x1 - y1 * y1;
-		if (t1 < 0) { n1 = 0.0; } else { t1 *= t1; n1 = t1 * t1 * dot2(gi1, x1, y1); }
-
-		var t2:F32 = 0.5 - x2 * x2 - y2 * y2;
-		if (t2 < 0) { n2 = 0.0; } else { t2 *= t2; n2 = t2 * t2 * dot2(gi2, x2, y2); }
-
-		return 70.0 * (n0 + n1 + n2);
+		return 70.0 * (corner(gi0, x0, y0) + corner(gi1, x1, y1) + corner(gi2, x2, y2));
 	}
 
 	// Shared perm table — same data as Simplex.perm, kept here to avoid cross-class access.
