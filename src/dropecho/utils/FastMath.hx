@@ -7,7 +7,13 @@ typedef F32 = Single;
 #else
 typedef F32 = Float;
 #end
+#if python
+// Python ints never overflow, so haxe.Int32 would emulate wrapping on every
+// add and multiply. Code that needs 32-bit bits masks them explicitly.
+typedef I32 = Int;
+#else
 typedef I32 = Int32;
+#end
 
 // Constants
 inline final MAX_I32:I32 = 2_147_483_647;
@@ -67,7 +73,8 @@ class FastMath {
 	}
 
 	inline public static function floor(f:F32):I32 {
-		#if cs
+		#if (cs || python)
+		// Python's Std.int wraps int() in a try/except.
 		return Math.floor(f);
 		#else
 		var t = Std.int(f);
