@@ -1,0 +1,26 @@
+# Benchmark build: times every module and prints median ms + an output checksum.
+# Run: npm run bench   (JS, C# and Python; compare a target's numbers before/after a change)
+-cp src
+-cp bench
+-lib seedyrng
+-lib dropecho.macros
+-D analyzer-optimize
+-D analyzer-user-var-fusion
+--main Bench
+
+--each
+
+--next
+-lib hxnodejs
+-D js-es=6
+-js artifacts/bench/bench.cjs
+
+--next
+-D unsafe
+-D net-ver=50
+-cs artifacts/bench/cs
+
+--next
+# Python is ~50x slower, so it samples a smaller grid.
+-D bench_size=128
+-python artifacts/bench/bench.py

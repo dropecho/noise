@@ -18,7 +18,9 @@
     "build": "npm run build:haxe && npm run build:example",
     "build:haxe": "haxe build.hxml",
     "build:example": "cp -R dist/js/esm/ docs/dropecho.noise/",
-    "clean": "rm -rf dist && rm -rf artifacts"
+    "clean": "rm -rf dist && rm -rf artifacts",
+    "build:bench": "haxe bench.hxml",
+    "bench": "npm run build:bench && node artifacts/bench/bench.cjs && mono artifacts/bench/cs/bin/Bench.exe && python3 artifacts/bench/bench.py"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^5.0.1",
