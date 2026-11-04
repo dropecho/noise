@@ -108,13 +108,6 @@ class Bench {
 			{name: "Displace", module: new Displace(perlin, new Simplex(1, 2), new Simplex(1, 3))},
 			{name: "Turbulence", module: new Turbulence(perlin, 0.5, 2.0)},
 			{name: "FractalWarp x3", module: new FractalWarp(perlin, 0.5, 2.0, 3)},
-			{name: "Cache warm", module: warmCache(perlin)},
 		];
-	}
-
-	static function warmCache(input:IModule2D):IModule2D {
-		var cache = new Cache(input);
-		sample(cache);
-		return cache;
 	}
 }
