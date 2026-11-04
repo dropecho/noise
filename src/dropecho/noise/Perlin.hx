@@ -50,24 +50,34 @@ class Perlin implements IModule2D {
 		Vector.fromArrayCopy(arr.concat(arr));
 	};
 
-	private static inline function dot_prod_grid(x:F32, y:F32, ux:I32, uy:I32):F32 {
-		final i = perm[perm[ux & 255] + (uy & 255)];
-		final gx = gradients_x[i];
-		final gy = gradients_y[i];
-		return (x - ux) * gx + (y - uy) * gy;
+	// Dot product of a corner's gradient with the offset (dx, dy) from that corner.
+	private static inline function corner(gradient:Int, dx:F32, dy:F32):F32 {
+		return dx * gradients_x[gradient] + dy * gradients_y[gradient];
 	}
 
 	public static inline function noise2d(x:F32, y:F32):F32 {
 		final X:I32 = FastMath.floor(x);
 		final Y:I32 = FastMath.floor(y);
 
-		var top_left     = dot_prod_grid(x, y, X,     Y);
-		var bottom_left  = dot_prod_grid(x, y, X,     Y + 1);
-		var top_right    = dot_prod_grid(x, y, X + 1, Y);
-		var bottom_right = dot_prod_grid(x, y, X + 1, Y + 1);
+		// Offsets from the corners. Not dx - 1: x - X rounds for negative x.
+		final dx:F32 = x - X;
+		final dy:F32 = y - Y;
+		final dx1:F32 = x - (X + 1);
+		final dy1:F32 = y - (Y + 1);
 
-		var u = MathUtils.fade(x - X);
-		var v = MathUtils.fade(y - Y);
+		// Each column's permutation is shared by its two corners.
+		final left = perm[X & 255];
+		final right = perm[(X + 1) & 255];
+		final top = Y & 255;
+		final bottom = (Y + 1) & 255;
+
+		var top_left     = corner(perm[left + top],     dx,  dy);
+		var bottom_left  = corner(perm[left + bottom],  dx,  dy1);
+		var top_right    = corner(perm[right + top],    dx1, dy);
+		var bottom_right = corner(perm[right + bottom], dx1, dy1);
+
+		var u = MathUtils.fade(dx);
+		var v = MathUtils.fade(dy);
 
 		// @formatter:off
 		return MathUtils.lerp(

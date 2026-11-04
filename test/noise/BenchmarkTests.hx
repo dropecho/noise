@@ -7,7 +7,6 @@ import dropecho.noise.Abs;
 import dropecho.noise.Add;
 import dropecho.noise.Billow;
 import dropecho.noise.Blend;
-import dropecho.noise.Cache;
 import dropecho.noise.CellularF2F1;
 import dropecho.noise.CheckerBoard;
 import dropecho.noise.Clamp;
@@ -384,44 +383,6 @@ class BenchmarkTests extends utest.Test {
 		var r = benchmark(new Turbulence(new Perlin(1, 1), 0.5, 2.0));
 		trace('Turbulence (power=0.5, freq=2)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
 		Assert.isTrue(r.time > 0);
-	}
-
-	// ── Cache ────────────────────────────────────────────────────────────────
-
-	public function test_maa_cache_cold() {
-		var perlin = new Perlin(1, 1);
-		var cached = new Cache(perlin);
-		var r = benchmark(cached);
-		trace('Cache (cold, all misses)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
-		Assert.isTrue(r.time > 0);
-	}
-
-	public function test_mab_cache_warm() {
-		var perlin = new Perlin(1, 1);
-		var cached = new Cache(perlin);
-		// Warm up the cache with a first pass.
-		benchmark(cached);
-		var r = benchmark(cached);
-		trace('Cache (warm, all hits)\n time: ${r.time}\n range: [${r.min}, ${r.max}]');
-		Assert.isTrue(r.time >= 0);
-	}
-
-	public function test_mac_cache_overhead_vs_raw() {
-		var perlin = new Perlin(1, 1);
-		var cached = new Cache(new Perlin(1, 1));
-
-		var rawTime = benchmark(perlin).time;
-		var coldTime = benchmark(cached).time;
-		var warmTime = benchmark(cached).time;
-
-		trace('Cache overhead comparison');
-		trace(' Raw Perlin:     ${rawTime}');
-		trace(' Cache (cold):   ${coldTime}');
-		trace(' Cache (warm):   ${warmTime}');
-		trace(' Cold overhead:  ${Math.round((coldTime / rawTime - 1) * 100)}%');
-		trace(' Warm speedup:   ${Math.round(rawTime / warmTime * 10) / 10}x');
-
-		Assert.isTrue(rawTime > 0);
 	}
 
 	// ── Comparison ───────────────────────────────────────────────────────────

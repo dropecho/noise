@@ -24,12 +24,21 @@ class CellularF2F1 implements IModule2D {
 		var f1:F32 = MAX_F32;
 		var f2:F32 = MAX_F32;
 
-		for (cx in -1...2) {
-			for (cy in -1...2) {
-				var cellX = cx + ix;
-				var cellY = cy + iy;
-				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+		// Nearest columns and rows first, so cells that cannot beat the second-nearest
+		// point are usually skipped before hashing.
+		for (i in 0...3) {
+			var cellX = ix + VectorMath.searchOffset(i);
+			var gapX:F32 = VectorMath.cellGap(x - cellX);
+			if (gapX * gapX >= f2) continue;
+
+			for (j in 0...3) {
+				var cellY = iy + VectorMath.searchOffset(j);
+				var gapY:F32 = VectorMath.cellGap(y - cellY);
+				if (gapX * gapX + gapY * gapY >= f2) continue;
+
+				var base = VectorMath.cellBase(cellX, cellY);
+				var jx:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_X));
+				var jy:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_Y));
 				var dx:F32 = x - (cellX + jx);
 				var dy:F32 = y - (cellY + jy);
 				var dist:F32 = dx * dx + dy * dy;

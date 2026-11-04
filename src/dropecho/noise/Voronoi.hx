@@ -28,15 +28,22 @@ class Voronoi implements IModule2D {
 		var iy = FastMath.floor(y);
 
 		var minDist:F32 = MAX_F32;
-		var closestCX = 0;
-		var closestCY = 0;
+		var closestBase:I32 = 0;
 
-		for (cx in -1...2) {
-			for (cy in -1...2) {
-				var cellX = cx + ix;
-				var cellY = cy + iy;
-				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+		// Nearest columns and rows first, so cells that cannot hold a closer point
+		// are usually skipped before hashing.
+		for (i in 0...3) {
+			var cellX = ix + VectorMath.searchOffset(i);
+			var gapX:F32 = VectorMath.cellGap(x - cellX);
+			if (bound(gapX, 0) >= minDist) continue;
+
+			for (j in 0...3) {
+				var cellY = iy + VectorMath.searchOffset(j);
+				if (bound(gapX, VectorMath.cellGap(y - cellY)) >= minDist) continue;
+
+				var base = VectorMath.cellBase(cellX, cellY);
+				var jx:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_X));
+				var jy:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_Y));
 				var dx:F32 = x - (cellX + jx);
 				var dy:F32 = y - (cellY + jy);
 				var dist:F32 = switch (distanceType) {
@@ -46,12 +53,20 @@ class Voronoi implements IModule2D {
 				};
 				if (dist < minDist) {
 					minDist = dist;
-					closestCX = cellX;
-					closestCY = cellY;
+					closestBase = base;
 				}
 			}
 		}
 
-		return (VectorMath.rand3I32(closestCX, closestCY, 0, 1) / 1073741824.0) - 1.0;
+		return VectorMath.toSigned(VectorMath.cellHash(closestBase, VectorMath.CELL_VALUE));
+	}
+
+	// The smallest distance, in this module's metric, that per-axis gaps allow.
+	private inline function bound(gapX:F32, gapY:F32):F32 {
+		return switch (distanceType) {
+			case Manhattan: gapX + gapY;
+			case Chebyshev: gapX < gapY ? gapY : gapX;
+			case Euclidian | _: gapX * gapX + gapY * gapY;
+		};
 	}
 }
