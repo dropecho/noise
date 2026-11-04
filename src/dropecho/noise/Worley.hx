@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import haxe.ds.Vector;
 import dropecho.utils.VectorMath;
 import dropecho.utils.FastMath;
 
@@ -8,7 +9,7 @@ import dropecho.utils.FastMath;
  * jittered cell center, scaled to approximately [-1, 1]. Produces a bubbly or cobblestone look.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Worley implements IModule2D {
+class Worley implements IGridModule2D {
 	private static inline final halfUnitVec:F32 = 0.353553;
 
 	public function new(frequency:F32);
@@ -47,5 +48,22 @@ class Worley implements IModule2D {
 		}
 
 		return (FastMath.sqrt(minDistSq) * 2) - 1;
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		// A direct call per point, so the JIT can inline it; no shared per-row work here.
+		for (i in 0...count) {
+			out[i] = value(xs[i], ys[i]);
+		}
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		for (j in 0...height) {
+			var y = ys[j];
+			var base = j * width;
+			for (i in 0...width) {
+				out[base + i] = value(xs[i], y);
+			}
+		}
 	}
 }

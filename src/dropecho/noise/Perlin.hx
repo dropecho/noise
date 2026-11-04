@@ -12,7 +12,7 @@ import dropecho.utils.MathUtils;
  * lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Perlin implements IModule2D {
+class Perlin implements IGridModule2D {
 	static var random:Random = new Random(69420);
 
 	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
@@ -29,6 +29,80 @@ class Perlin implements IModule2D {
 		}
 
 		return val;
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		fractal(out, xs, ys, count, octaves, frequency, lacunarity, persistence);
+	}
+
+	/**
+	 * Fills out[i] with the same octave sum as Perlin.value at (xs[i], ys[i]).
+	 * Shared by Perlin, Billow and Ridged, which differ only in how they map the sum.
+	 */
+	@:allow(dropecho.noise)
+	static function fractal(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int, octaves:I32, frequency:F32, lacunarity:F32,
+			persistence:F32):Void {
+		for (i in 0...count) {
+			out[i] = 0;
+		}
+		var row = Batch.isRow(ys, count);
+		var f:F32 = frequency;
+		var p:F32 = 1;
+
+		for (_ in 0...octaves) {
+			if (row) {
+				addRow(out, xs, ys[0] * f, count, f, p);
+			} else {
+				for (i in 0...count) {
+					out[i] += noise2d(xs[i] * f, ys[i] * f) * p;
+				}
+			}
+			f *= lacunarity;
+			p *= persistence;
+		}
+	}
+
+	/**
+	 * Adds one octave along a row: out[i] += noise2d(xs[i] * f, y) * p.
+	 * Same arithmetic as noise2d, but the row's terms are computed once per row
+	 * and the corner gradients once per cell instead of once per point.
+	 */
+	static function addRow(out:Vector<F32>, xs:Vector<F32>, y:F32, count:Int, f:F32, p:F32):Void {
+		final Y:I32 = FastMath.floor(y);
+		final dy:F32 = y - Y;
+		final dy1:F32 = y - (Y + 1);
+		final top = Y & 255;
+		final bottom = (Y + 1) & 255;
+		final v = MathUtils.fade(dy);
+
+		var cellX:I32 = 0;
+		var haveCell = false;
+		var tl = 0, bl = 0, tr = 0, br = 0;
+
+		for (i in 0...count) {
+			final x:F32 = xs[i] * f;
+			final X:I32 = FastMath.floor(x);
+			if (!haveCell || X != cellX) {
+				haveCell = true;
+				cellX = X;
+				final left = perm[X & 255];
+				final right = perm[(X + 1) & 255];
+				tl = perm[left + top];
+				bl = perm[left + bottom];
+				tr = perm[right + top];
+				br = perm[right + bottom];
+			}
+			final dx:F32 = x - X;
+			final dx1:F32 = x - (X + 1);
+
+			var top_left     = corner(tl, dx,  dy);
+			var bottom_left  = corner(bl, dx,  dy1);
+			var top_right    = corner(tr, dx1, dy);
+			var bottom_right = corner(br, dx1, dy1);
+
+			var u = MathUtils.fade(dx);
+			out[i] += MathUtils.lerp(MathUtils.lerp(top_left, top_right, u), MathUtils.lerp(bottom_left, bottom_right, u), v) * p;
+		}
 	}
 
 	// haxe.ds.Vector compiles to a native array on C# (no Array wrapper indirection)
@@ -85,5 +159,67 @@ class Perlin implements IModule2D {
 			MathUtils.lerp(bottom_left, bottom_right, u),
 			v
 		);
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		fractalGrid(out, xs, width, ys, height, octaves, frequency, lacunarity, persistence);
+	}
+
+	/**
+	 * Fills a grid with the same octave sum as Perlin.value, computing each column's
+	 * terms once per octave and each row's once per row. Shared by Perlin, Billow and Ridged.
+	 */
+	@:allow(dropecho.noise)
+	static function fractalGrid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int, octaves:I32, frequency:F32,
+			lacunarity:F32, persistence:F32):Void {
+		var count = width * height;
+		for (k in 0...count) {
+			out[k] = 0;
+		}
+		// Per-column terms, computed once per octave for the whole grid.
+		var colDx = new Vector<F32>(width);
+		var colDx1 = new Vector<F32>(width);
+		var colU = new Vector<F32>(width);
+		var colLeft = new Vector<Int>(width);
+		var colRight = new Vector<Int>(width);
+
+		var f:F32 = frequency;
+		var p:F32 = 1;
+		for (_ in 0...octaves) {
+			for (i in 0...width) {
+				final x:F32 = xs[i] * f;
+				final X:I32 = FastMath.floor(x);
+				colDx[i] = x - X;
+				colDx1[i] = x - (X + 1);
+				colU[i] = MathUtils.fade(colDx[i]);
+				colLeft[i] = perm[X & 255];
+				colRight[i] = perm[(X + 1) & 255];
+			}
+			for (j in 0...height) {
+				final y:F32 = ys[j] * f;
+				final Y:I32 = FastMath.floor(y);
+				final dy:F32 = y - Y;
+				final dy1:F32 = y - (Y + 1);
+				final top = Y & 255;
+				final bottom = (Y + 1) & 255;
+				final v = MathUtils.fade(dy);
+				final base = j * width;
+
+				for (i in 0...width) {
+					final dx = colDx[i];
+					final dx1 = colDx1[i];
+					final left = colLeft[i];
+					final right = colRight[i];
+					var top_left     = corner(perm[left + top],     dx,  dy);
+					var bottom_left  = corner(perm[left + bottom],  dx,  dy1);
+					var top_right    = corner(perm[right + top],    dx1, dy);
+					var bottom_right = corner(perm[right + bottom], dx1, dy1);
+					var u = colU[i];
+					out[base + i] += MathUtils.lerp(MathUtils.lerp(top_left, top_right, u), MathUtils.lerp(bottom_left, bottom_right, u), v) * p;
+				}
+			}
+			f *= lacunarity;
+			p *= persistence;
+		}
 	}
 }

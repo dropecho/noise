@@ -10,7 +10,7 @@ typedef CurvePoint = {input:F32, output:F32};
  * (input, output) control point pairs. Control points must be sorted by input value.
  * Values outside the range of the control points are clamped to the nearest endpoint.
  */
-class Curve implements IModule2D {
+class Curve implements IGridModule2D {
 	var input:IModule2D;
 
 	// Control points unpacked into parallel vectors: anonymous-structure field access
@@ -31,8 +31,17 @@ class Curve implements IModule2D {
 	}
 
 	public function value(x:F32, y:F32):F32 {
-		var v = input.value(x, y);
+		return map(input.value(x, y));
+	}
 
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		Batch.values(input, out, xs, ys, count);
+		for (i in 0...count) {
+			out[i] = map(out[i]);
+		}
+	}
+
+	private function map(v:F32):F32 {
 		if (n == 0) return v;
 		if (v <= inputs[0]) return outputs[0];
 		if (v >= inputs[n - 1]) return outputs[n - 1];
@@ -60,5 +69,12 @@ class Curve implements IModule2D {
 		var t3 = t2 * t;
 		var half:F32 = 0.5;
 		return half * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		Batch.gridValues(input, out, xs, width, ys, height);
+		for (k in 0...width * height) {
+			out[k] = map(out[k]);
+		}
 	}
 }

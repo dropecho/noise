@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import haxe.ds.Vector;
 import dropecho.utils.FastMath;
 
 /**
@@ -7,7 +8,7 @@ import dropecho.utils.FastMath;
  * evaluating the source module. Each octave feeds the warped position into the next warp,
  * producing increasingly complex, swirling distortion.
  */
-class FractalWarp implements IModule2D {
+class FractalWarp implements IBatchModule2D {
 	var input:IModule2D;
 	var warpStrength:F32;
 	var warpFrequency:F32;
@@ -32,5 +33,24 @@ class FractalWarp implements IModule2D {
 		}
 
 		return input.value(wx, wy);
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		var warpedX = new Vector<F32>(count);
+		var warpedY = new Vector<F32>(count);
+		for (i in 0...count) {
+			// Same arithmetic as value().
+			var wx = xs[i];
+			var wy = ys[i];
+			for (_ in 0...octaves) {
+				var fx = wx * warpFrequency;
+				var fy = wy * warpFrequency;
+				wx += Simplex.noise(fx, fy, 0.0) * warpStrength;
+				wy += Simplex.noise(fx, fy, 1.0) * warpStrength;
+			}
+			warpedX[i] = wx;
+			warpedY[i] = wy;
+		}
+		Batch.values(input, out, warpedX, warpedY, count);
 	}
 }
