@@ -30,10 +30,17 @@ class Voronoi implements IModule2D {
 		var minDist:F32 = MAX_F32;
 		var closestBase:I32 = 0;
 
-		for (cx in -1...2) {
-			for (cy in -1...2) {
-				var cellX = cx + ix;
-				var cellY = cy + iy;
+		// Nearest columns and rows first, so cells that cannot hold a closer point
+		// are usually skipped before hashing.
+		for (i in 0...3) {
+			var cellX = ix + VectorMath.searchOffset(i);
+			var gapX:F32 = VectorMath.cellGap(x - cellX);
+			if (bound(gapX, 0) >= minDist) continue;
+
+			for (j in 0...3) {
+				var cellY = iy + VectorMath.searchOffset(j);
+				if (bound(gapX, VectorMath.cellGap(y - cellY)) >= minDist) continue;
+
 				var base = VectorMath.cellBase(cellX, cellY);
 				var jx:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_X));
 				var jy:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_Y));
@@ -52,5 +59,14 @@ class Voronoi implements IModule2D {
 		}
 
 		return VectorMath.toSigned(VectorMath.cellHash(closestBase, VectorMath.CELL_VALUE));
+	}
+
+	// The smallest distance, in this module's metric, that per-axis gaps allow.
+	private inline function bound(gapX:F32, gapY:F32):F32 {
+		return switch (distanceType) {
+			case Manhattan: gapX + gapY;
+			case Chebyshev: gapX < gapY ? gapY : gapX;
+			case Euclidian | _: gapX * gapX + gapY * gapY;
+		};
 	}
 }

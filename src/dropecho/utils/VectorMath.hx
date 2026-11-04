@@ -45,6 +45,31 @@ class VectorMath {
 		return mixI32(base + offset);
 	}
 
+	/** Above every cell module's jitter amplitude (at most 0.353553), with margin for rounding. */
+	@:allow(dropecho.noise) static inline final JITTER_BOUND:F32 = 0.36;
+
+	/**
+	 * A lower bound on the distance along one axis from a coordinate to any point a
+	 * cell's jitter can reach. Cells whose bound already exceeds the best distance
+	 * found can be skipped without hashing.
+	 * @param offset The coordinate minus the cell's corner on that axis.
+	 * @return The bound, 0 or more.
+	 */
+	@:allow(dropecho.noise) static inline function cellGap(offset:F32):F32 {
+		var gap:F32 = (offset >= 0 ? offset : -offset) - JITTER_BOUND;
+		return gap > 0 ? gap : 0;
+	}
+
+	/**
+	 * The neighbour offset to visit at step i of a 3-cell search along one axis:
+	 * 0 and 1 first, as the two corners around the coordinate, then -1.
+	 * @param i The step, 0 to 2.
+	 * @return 0, 1 or -1.
+	 */
+	@:allow(dropecho.noise) static inline function searchOffset(i:Int):Int {
+		return i == 2 ? -1 : i;
+	}
+
 	/**
 	 * Maps a hash in [0, 2^31) to [-1, 1). Multiplying by 2^-30 is exact, like dividing by 2^30.
 	 * @param hash A hash from cellHash or rand3I32.
