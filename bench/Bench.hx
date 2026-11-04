@@ -23,37 +23,58 @@ class Bench {
 		var filter = Sys.args().length > 0 ? new EReg(Sys.args()[0], "i") : null;
 		for (c in cases()) {
 			if (filter != null && !filter.match(c.name)) continue;
-			var r = measure(c.module);
-			Sys.println('${pad(c.name, 28)}${pad(Std.string(Math.round(r.ms * 100) / 100), 10)}${r.checksum}/${scatter(c.module)}');
+			var r = measure(c.module, sample);
+			var b = measure(c.module, sampleBatch);
+			var match = b.checksum == r.checksum ? "" : '  BATCH MISMATCH ${b.checksum}';
+			Sys.println('${pad(c.name, 28)}${pad(ms(r.ms), 10)}${r.checksum}/${scatter(c.module)}  batch ${ms(b.ms)}$match');
 		}
 	}
 
 	/**
 	 * Samples a module over the grid once to warm up, then REPEATS more times.
 	 * @param module The module to time.
+	 * @param pass One pass over the grid, returning its checksum.
 	 * @return The median time in milliseconds and the checksum of one pass.
 	 */
-	static function measure(module:IModule2D):{ms:Float, checksum:Float} {
-		var checksum = sample(module);
+	static function measure(module:IModule2D, pass:IModule2D->Float):{ms:Float, checksum:Float} {
+		var checksum = pass(module);
 		var times = [];
 		for (_ in 0...REPEATS) {
 			var start = haxe.Timer.stamp();
-			sample(module);
+			pass(module);
 			times.push((haxe.Timer.stamp() - start) * 1000);
 		}
 		times.sort(Reflect.compare);
 		return {ms: times[REPEATS >> 1], checksum: checksum};
 	}
 
+	// Row by row, matching Batch.grid's layout so both checksums sum in the same order.
 	static function sample(module:IModule2D):Float {
-		var step:Float = SPAN / SIZE;
+		var step:F32 = SPAN / SIZE;
 		var sum:Float = 0;
-		for (x in 0...SIZE) {
-			for (y in 0...SIZE) {
+		for (y in 0...SIZE) {
+			for (x in 0...SIZE) {
 				sum += module.value(x * step, y * step);
 			}
 		}
 		return sum;
+	}
+
+	static var batchOut:haxe.ds.Vector<F32>;
+
+	static function sampleBatch(module:IModule2D):Float {
+		if (batchOut == null) batchOut = new haxe.ds.Vector<F32>(SIZE * SIZE);
+		var step:F32 = SPAN / SIZE;
+		Batch.grid(module, batchOut, 0, 0, step, SIZE, SIZE);
+		var sum:Float = 0;
+		for (i in 0...SIZE * SIZE) {
+			sum += batchOut[i];
+		}
+		return sum;
+	}
+
+	static function ms(t:Float):String {
+		return Std.string(Math.round(t * 100) / 100);
 	}
 
 	/**
@@ -128,6 +149,10 @@ class Bench {
 			{name: "Displace", module: new Displace(perlin, new Simplex(1, 2), new Simplex(1, 3))},
 			{name: "Turbulence", module: new Turbulence(perlin, 0.5, 2.0)},
 			{name: "FractalWarp x3", module: new FractalWarp(perlin, 0.5, 2.0, 3)},
+			{name: "Clamp(Perlin x4)", module: new Clamp(new Perlin(4, 1), -0.5, 0.5)},
+			{name: "Translate(Perlin)", module: new TranslatePoint(perlin, 0.5, 0.25)},
+			{name: "Add(Perlin, Perlin x4)", module: new Add(perlin, new Perlin(4, 1))},
+			{name: "Deep graph", module: new Clamp(new Add(new TranslatePoint(new Perlin(4, 1), 3.5, 1.25), new Clamp(perlin, -0.4, 0.4)), -0.6, 0.6)},
 		];
 	}
 }
