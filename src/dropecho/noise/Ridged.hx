@@ -16,11 +16,9 @@ class Ridged implements IModule2D {
 
 		var currentAmplitude:F32 = 1;
 		var currentFrequency:F32 = frequency;
-		var currentValue:F32;
 
 		for (_ in 0...this.octaves) {
-			currentValue = Perlin.noise2d(x * currentFrequency, y * currentFrequency);
-			val += currentValue * currentAmplitude;
+			val += Perlin.noise2d(x * currentFrequency, y * currentFrequency) * currentAmplitude;
 
 			currentAmplitude *= persistence;
 			currentFrequency *= lacunarity;
@@ -28,6 +26,4 @@ class Ridged implements IModule2D {
 
 		return 1 - FastMath.abs((octaves + 1) * val);
 	}
-
-	static final weights = [];
 }
