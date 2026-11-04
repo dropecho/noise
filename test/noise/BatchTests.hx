@@ -10,14 +10,62 @@ class BatchTests extends utest.Test {
 
 	function modules():Array<{name:String, module:IModule2D}> {
 		var perlin = new Perlin(1, 0.7);
+		var simplex = new Simplex(2, 1);
+		// Spans well past [0, 1], so Blend and Select hit all three branches.
+		var wide = new ScaleBias(new Perlin(2, 0.5), 3, 0.5);
+		var curvePoints:Array<dropecho.noise.Curve.CurvePoint> = [
+			{input: (-1.0 : F32), output: (-1.0 : F32)},
+			{input: (-0.2 : F32), output: (0.3 : F32)},
+			{input: (0.4 : F32), output: (-0.1 : F32)},
+			{input: (1.0 : F32), output: (1.0 : F32)},
+		];
+		var terracePoints:Array<dropecho.noise.Terrace.ControlPoint> = [
+			{min: (-1.0 : F32), max: (-0.3 : F32), val: (-0.6 : F32)},
+			{min: (-0.3 : F32), max: (0.2 : F32), val: (0.0 : F32)},
+			{min: (0.2 : F32), max: (1.0 : F32), val: (0.6 : F32)},
+		];
 		return [
 			{name: "Perlin", module: perlin},
 			{name: "Perlin x4", module: new Perlin(4, 1.3)},
+			{name: "Simplex", module: simplex},
+			{name: "Billow", module: new Billow(3, 1.1)},
+			{name: "Ridged", module: new Ridged(3, 0.9)},
+			{name: "Voronoi Euclidian", module: new Voronoi(0.8, Euclidian)},
+			{name: "Voronoi Manhattan", module: new Voronoi(0.8, Manhattan)},
+			{name: "Voronoi Chebyshev", module: new Voronoi(0.8, Chebyshev)},
+			{name: "Worley", module: new Worley(1.2)},
+			{name: "CellularF2F1", module: new CellularF2F1(0.9)},
+			{name: "CheckerBoard", module: new CheckerBoard(1.5)},
+			{name: "Cones", module: new Cones(0.7)},
+			{name: "Cylinders", module: new Cylinders(0.7)},
+			{name: "Spheres", module: new Spheres(0.3)},
+			{name: "Constant", module: new Constant(0.25)},
+			{name: "Abs", module: new Abs(perlin)},
+			{name: "Invert", module: new Invert(perlin)},
+			{name: "ScaleBias", module: new ScaleBias(perlin, 1.7, -0.2)},
+			{name: "Threshold", module: new Threshold(perlin, 0.1)},
+			{name: "Exponent", module: new Exponent(perlin, 2.5)},
+			{name: "Normalize", module: new Normalize(perlin, -1, 1, 0, 1)},
 			{name: "Clamp", module: new Clamp(new Perlin(3, 1), -0.2, 0.3)},
-			{name: "Add", module: new Add(perlin, new Simplex(2, 1))},
+			{name: "Curve", module: new Curve(perlin, curvePoints)},
+			{name: "Terrace", module: new Terrace(perlin, terracePoints)},
+			{name: "Add", module: new Add(perlin, simplex)},
+			{name: "Sub", module: new Sub(perlin, simplex)},
+			{name: "Multiply", module: new Multiply(perlin, simplex)},
+			{name: "Min", module: new Min(perlin, simplex)},
+			{name: "Max", module: new Max(perlin, simplex)},
+			{name: "Pow", module: new Pow(new Abs(perlin), new Constant(1.5))},
 			{name: "TranslatePoint", module: new TranslatePoint(perlin, 0.37, -1.91)},
+			{name: "Scale", module: new Scale(perlin, 1.37)},
+			{name: "RotatePoint", module: new RotatePoint(perlin, 0.6)},
+			{name: "Displace one module", module: new Displace(perlin, simplex, null, 0.8)},
+			{name: "Displace two modules", module: new Displace(perlin, simplex, new Worley(1), 0.8)},
+			{name: "Turbulence", module: new Turbulence(perlin, 0.5, 2)},
+			{name: "FractalWarp", module: new FractalWarp(perlin, 0.5, 2, 3)},
+			{name: "Blend", module: new Blend(perlin, simplex, wide)},
+			{name: "Select hard", module: new Select(perlin, simplex, wide, 0.5, 0)},
+			{name: "Select falloff", module: new Select(perlin, simplex, wide, 0.5, 0.8)},
 			{name: "nested", module: new Clamp(new Add(new TranslatePoint(new Perlin(2, 1), 3.3, 0.1), perlin), -0.5, 0.5)},
-			{name: "fallback (Simplex)", module: new Simplex(2, 1)},
 		];
 	}
 

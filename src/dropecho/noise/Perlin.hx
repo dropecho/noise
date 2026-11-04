@@ -32,14 +32,24 @@ class Perlin implements IBatchModule2D {
 	}
 
 	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		fractal(out, xs, ys, count, octaves, frequency, lacunarity, persistence);
+	}
+
+	/**
+	 * Fills out[i] with the same octave sum as Perlin.value at (xs[i], ys[i]).
+	 * Shared by Perlin, Billow and Ridged, which differ only in how they map the sum.
+	 */
+	@:allow(dropecho.noise)
+	static function fractal(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int, octaves:I32, frequency:F32, lacunarity:F32,
+			persistence:F32):Void {
 		for (i in 0...count) {
 			out[i] = 0;
 		}
 		var row = Batch.isRow(ys, count);
-		var f:F32 = this.frequency;
+		var f:F32 = frequency;
 		var p:F32 = 1;
 
-		for (_ in 0...this.octaves) {
+		for (_ in 0...octaves) {
 			if (row) {
 				addRow(out, xs, ys[0] * f, count, f, p);
 			} else {
@@ -47,8 +57,8 @@ class Perlin implements IBatchModule2D {
 					out[i] += noise2d(xs[i] * f, ys[i] * f) * p;
 				}
 			}
-			f *= this.lacunarity;
-			p *= this.persistence;
+			f *= lacunarity;
+			p *= persistence;
 		}
 	}
 

@@ -10,7 +10,7 @@ import dropecho.utils.FastMath;
  * Supports multiple octaves for fractal detail.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Simplex implements IModule2D {
+class Simplex implements IBatchModule2D {
 	/**
 	 * @param octaves The number of octaves in the noise (how many "layers").
 	 * @param frequency The frequency of the base noise layer.
@@ -127,5 +127,12 @@ class Simplex implements IModule2D {
 		if (t3 < 0) { n3 = 0.0; } else { t3 *= t3; n3 = t3 * t3 * dot3(gi3, x3, y3, z3); }
 
 		return 32.0 * (n0 + n1 + n2 + n3);
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		// A direct call per point, so the JIT can inline it; no shared per-row work here.
+		for (i in 0...count) {
+			out[i] = value(xs[i], ys[i]);
+		}
 	}
 }

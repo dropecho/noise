@@ -1,5 +1,6 @@
 package dropecho.noise;
 
+import haxe.ds.Vector;
 import dropecho.utils.FastMath;
 
 /**
@@ -7,7 +8,7 @@ import dropecho.utils.FastMath;
  * Resembles rolling storm clouds or rounded hills. Output is always >= 0.
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Billow implements IModule2D {
+class Billow implements IBatchModule2D {
 	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
 
 	public function value(x:F32, y:F32):F32 {
@@ -24,5 +25,12 @@ class Billow implements IModule2D {
 		}
 
 		return FastMath.abs(val);
+	}
+
+	public function values(out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Void {
+		Perlin.fractal(out, xs, ys, count, octaves, frequency, lacunarity, persistence);
+		for (i in 0...count) {
+			out[i] = FastMath.abs(out[i]);
+		}
 	}
 }

@@ -2,6 +2,7 @@ package dropecho.noise;
 
 import haxe.ds.Vector;
 import dropecho.utils.FastMath;
+import dropecho.utils.MathUtils;
 
 /** Samples many points of any module at once, using `IBatchModule2D.values` when the module has it. */
 class Batch {
@@ -48,6 +49,70 @@ class Batch {
 			}
 			values(module, row, xs, ys, width);
 			Vector.blit(row, 0, out, j * width, width);
+		}
+	}
+
+	/**
+	 * Samples a combiner's two inputs at the same points.
+	 * @param input Its first input; fills `out`.
+	 * @param input2 Its second input.
+	 * @return input2's values, in a new vector so threads never share it.
+	 */
+	@:allow(dropecho.noise)
+	static function both(input:IModule2D, input2:IModule2D, out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, count:Int):Vector<F32> {
+		var other = new Vector<F32>(count);
+		values(input, out, xs, ys, count);
+		values(input2, other, xs, ys, count);
+		return other;
+	}
+
+	/**
+	 * Samples a module at only some of the points: out[i] = module.value(xs[i], ys[i])
+	 * for each i in `indices`. Other entries of `out` are left alone.
+	 * @param indices The points to sample, by index.
+	 * @param n How many entries of `indices` to use.
+	 */
+	@:allow(dropecho.noise)
+	static function subset(module:IModule2D, out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>, indices:Vector<Int>, n:Int):Void {
+		if (n == 0) return;
+		var subXs = new Vector<F32>(n);
+		var subYs = new Vector<F32>(n);
+		var subOut = new Vector<F32>(n);
+		for (k in 0...n) {
+			subXs[k] = xs[indices[k]];
+			subYs[k] = ys[indices[k]];
+		}
+		values(module, subOut, subXs, subYs, n);
+		for (k in 0...n) {
+			out[indices[k]] = subOut[k];
+		}
+	}
+
+	/**
+	 * Mixes two modules by a weight per point, as Blend and Select do one point at a time:
+	 * `from` where weight <= 0, `to` where weight >= 1, and lerp(from, to, weight) between.
+	 * Each module is only sampled at the points that use it.
+	 * @param weights The weight of `to` at each point.
+	 */
+	@:allow(dropecho.noise)
+	static function lerpByWeight(from:IModule2D, to:IModule2D, weights:Vector<F32>, out:Vector<F32>, xs:Vector<F32>, ys:Vector<F32>,
+			count:Int):Void {
+		var usesFrom = new Vector<Int>(count);
+		var usesTo = new Vector<Int>(count);
+		var nFrom = 0;
+		var nTo = 0;
+		for (i in 0...count) {
+			// Written as negations so a NaN weight uses both, like the lerp branch in value().
+			if (!(weights[i] >= 1)) usesFrom[nFrom++] = i;
+			if (!(weights[i] <= 0)) usesTo[nTo++] = i;
+		}
+		var fromValues = new Vector<F32>(count);
+		var toValues = new Vector<F32>(count);
+		subset(from, fromValues, xs, ys, usesFrom, nFrom);
+		subset(to, toValues, xs, ys, usesTo, nTo);
+		for (i in 0...count) {
+			var w = weights[i];
+			out[i] = w <= 0 ? fromValues[i] : (w >= 1 ? toValues[i] : MathUtils.lerp(fromValues[i], toValues[i], w));
 		}
 	}
 
