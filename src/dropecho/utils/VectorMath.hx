@@ -15,9 +15,43 @@ class VectorMath {
 	}
 
 	static public inline function rand3I32(x:I32, y:I32, z:I32, seed:I32):I32 {
-		var n = (x * magicX + y * magicY + z * magicZ + seed * magicS) & 0x7fffffff;
+		return mixI32(x * magicX + y * magicY + z * magicZ + seed * magicS);
+	}
+
+	static inline function mixI32(sum:I32):I32 {
+		var n = sum & 0x7fffffff;
 		n = (n >> 13) ^ n;
 		return (n * (n * n)) & 0x7fffffff;
+	}
+
+	// Cell hashing for Voronoi, Worley and CellularF2F1. cellHash(cellBase(x, y), offset)
+	// equals rand3I32(x, y, z, seed) for the offset naming that z and seed, but computes
+	// the shared x and y terms once per cell instead of once per hash.
+
+	/** Offset for rand3I32(x, y, 0, 0): a cell's x jitter. */
+	@:allow(dropecho.noise) static inline final JITTER_X:I32 = 0;
+
+	/** Offset for rand3I32(x, y, 1, 0): a cell's y jitter. */
+	@:allow(dropecho.noise) static inline final JITTER_Y:I32 = magicZ;
+
+	/** Offset for rand3I32(x, y, 0, 1): a cell's own value. */
+	@:allow(dropecho.noise) static inline final CELL_VALUE:I32 = magicS;
+
+	@:allow(dropecho.noise) static inline function cellBase(x:I32, y:I32):I32 {
+		return x * magicX + y * magicY;
+	}
+
+	@:allow(dropecho.noise) static inline function cellHash(base:I32, offset:I32):I32 {
+		return mixI32(base + offset);
+	}
+
+	/**
+	 * Maps a hash in [0, 2^31) to [-1, 1). Multiplying by 2^-30 is exact, like dividing by 2^30.
+	 * @param hash A hash from cellHash or rand3I32.
+	 * @return The hash scaled to [-1, 1).
+	 */
+	@:allow(dropecho.noise) static inline function toSigned(hash:I32):Float {
+		return hash * (1 / 1073741824.0) - 1.0;
 	}
 
 	public static inline function rand3dTo3d(a:Vector3):Vector3 {

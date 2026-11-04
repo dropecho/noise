@@ -26,8 +26,9 @@ class Worley implements IModule2D {
 			for (cy in -1...2) {
 				var cellX = cx + ix;
 				var cellY = cy + iy;
-				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+				var base = VectorMath.cellBase(cellX, cellY);
+				var jx:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_X));
+				var jy:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_Y));
 				var dx:F32 = x - (cellX + jx);
 				var dy:F32 = y - (cellY + jy);
 				var distSq:F32 = dx * dx + dy * dy;

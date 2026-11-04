@@ -28,15 +28,15 @@ class Voronoi implements IModule2D {
 		var iy = FastMath.floor(y);
 
 		var minDist:F32 = MAX_F32;
-		var closestCX = 0;
-		var closestCY = 0;
+		var closestBase:I32 = 0;
 
 		for (cx in -1...2) {
 			for (cy in -1...2) {
 				var cellX = cx + ix;
 				var cellY = cy + iy;
-				var jx:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 0, 0) / 1073741824.0) - 1.0);
-				var jy:F32 = halfUnitVec * ((VectorMath.rand3I32(cellX, cellY, 1, 0) / 1073741824.0) - 1.0);
+				var base = VectorMath.cellBase(cellX, cellY);
+				var jx:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_X));
+				var jy:F32 = halfUnitVec * VectorMath.toSigned(VectorMath.cellHash(base, VectorMath.JITTER_Y));
 				var dx:F32 = x - (cellX + jx);
 				var dy:F32 = y - (cellY + jy);
 				var dist:F32 = switch (distanceType) {
@@ -46,12 +46,11 @@ class Voronoi implements IModule2D {
 				};
 				if (dist < minDist) {
 					minDist = dist;
-					closestCX = cellX;
-					closestCY = cellY;
+					closestBase = base;
 				}
 			}
 		}
 
-		return (VectorMath.rand3I32(closestCX, closestCY, 0, 1) / 1073741824.0) - 1.0;
+		return VectorMath.toSigned(VectorMath.cellHash(closestBase, VectorMath.CELL_VALUE));
 	}
 }
