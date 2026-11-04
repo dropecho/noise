@@ -117,6 +117,31 @@ class BatchTests extends utest.Test {
 		assertMatchesValue(scattered());
 	}
 
+	public function test_grid_matches_value_for_every_module() {
+		// Uneven columns and rows crossing zero.
+		var width = 23;
+		var height = 9;
+		var xs = new Vector<F32>(width);
+		var ys = new Vector<F32>(height);
+		for (i in 0...width) {
+			xs[i] = -4.3 + i * 0.41 + (i % 3) * 0.07;
+		}
+		for (j in 0...height) {
+			ys[j] = -1.9 + j * 0.53 - (j % 2) * 0.11;
+		}
+		for (m in modules()) {
+			var out = new Vector<F32>(width * height);
+			Batch.gridValues(m.module, out, xs, width, ys, height);
+			var mismatches = 0;
+			for (j in 0...height) {
+				for (i in 0...width) {
+					if (out[j * width + i] != m.module.value(xs[i], ys[j])) mismatches++;
+				}
+			}
+			Assert.equals(0, mismatches, '${m.name}: grid differs from value() at $mismatches points');
+		}
+	}
+
 	public function test_grid_lays_out_rows() {
 		var perlin = new Perlin(2, 1);
 		var out = new Vector<F32>(6 * 4);

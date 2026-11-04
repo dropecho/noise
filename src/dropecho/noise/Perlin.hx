@@ -12,7 +12,7 @@ import dropecho.utils.MathUtils;
  * lacunarity (frequency multiplier per octave) and persistence (amplitude multiplier per octave).
  */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Perlin implements IBatchModule2D {
+class Perlin implements IGridModule2D {
 	static var random:Random = new Random(69420);
 
 	public function new(octaves:I32 = 1, frequency:F32 = 1, lacunarity:F32 = 2, persistence:F32 = 0.5);
@@ -159,5 +159,58 @@ class Perlin implements IBatchModule2D {
 			MathUtils.lerp(bottom_left, bottom_right, u),
 			v
 		);
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		var count = width * height;
+		for (k in 0...count) {
+			out[k] = 0;
+		}
+		// Per-column terms, computed once per octave for the whole grid.
+		var colX = new Vector<I32>(width);
+		var colDx = new Vector<F32>(width);
+		var colDx1 = new Vector<F32>(width);
+		var colU = new Vector<F32>(width);
+		var colLeft = new Vector<Int>(width);
+		var colRight = new Vector<Int>(width);
+
+		var f:F32 = this.frequency;
+		var p:F32 = 1;
+		for (_ in 0...this.octaves) {
+			for (i in 0...width) {
+				final x:F32 = xs[i] * f;
+				final X:I32 = FastMath.floor(x);
+				colDx[i] = x - X;
+				colDx1[i] = x - (X + 1);
+				colU[i] = MathUtils.fade(colDx[i]);
+				colLeft[i] = perm[X & 255];
+				colRight[i] = perm[(X + 1) & 255];
+			}
+			for (j in 0...height) {
+				final y:F32 = ys[j] * f;
+				final Y:I32 = FastMath.floor(y);
+				final dy:F32 = y - Y;
+				final dy1:F32 = y - (Y + 1);
+				final top = Y & 255;
+				final bottom = (Y + 1) & 255;
+				final v = MathUtils.fade(dy);
+				final base = j * width;
+
+				for (i in 0...width) {
+					final dx = colDx[i];
+					final dx1 = colDx1[i];
+					final left = colLeft[i];
+					final right = colRight[i];
+					var top_left     = corner(perm[left + top],     dx,  dy);
+					var bottom_left  = corner(perm[left + bottom],  dx,  dy1);
+					var top_right    = corner(perm[right + top],    dx1, dy);
+					var bottom_right = corner(perm[right + bottom], dx1, dy1);
+					var u = colU[i];
+					out[base + i] += MathUtils.lerp(MathUtils.lerp(top_left, top_right, u), MathUtils.lerp(bottom_left, bottom_right, u), v) * p;
+				}
+			}
+			f *= this.lacunarity;
+			p *= this.persistence;
+		}
 	}
 }

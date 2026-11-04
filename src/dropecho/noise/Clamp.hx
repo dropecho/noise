@@ -5,7 +5,7 @@ import dropecho.utils.FastMath;
 
 /** Clamps the source module's output to a [min, max] range. Values outside the range are pinned to the nearest bound. */
 @:build(dropecho.macros.Constructor.fromArgs())
-class Clamp implements IBatchModule2D {
+class Clamp implements IGridModule2D {
 	/**
 	 * @param input The IModule2D to get a value from. 
 	 * @param min The minimum value to clamp to. 
@@ -26,5 +26,12 @@ class Clamp implements IBatchModule2D {
 
 	private inline function apply(v:F32):F32 {
 		return FastMath.min(FastMath.max(v, min), max);
+	}
+
+	public function grid(out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		Batch.gridValues(input, out, xs, width, ys, height);
+		for (k in 0...width * height) {
+			out[k] = apply(out[k]);
+		}
 	}
 }

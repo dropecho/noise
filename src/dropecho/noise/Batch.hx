@@ -6,6 +6,10 @@ import dropecho.utils.MathUtils;
 
 /** Samples many points of any module at once, using `IBatchModule2D.values` when the module has it. */
 class Batch {
+	// Rows per band in Batch.grid. Measured on a 512-wide grid: 8-128 all beat whole-grid
+	// calls for combiners (whose scratch then fits in cache); 32 was best overall on JS.
+	static inline final BAND_ROWS = 32;
+
 	/**
 	 * Samples `count` points of a module.
 	 * @param module The module to sample.
@@ -26,7 +30,7 @@ class Batch {
 	}
 
 	/**
-	 * Samples a width x height grid of points, one row per batch.
+	 * Samples an evenly spaced width x height grid.
 	 * @param module The module to sample.
 	 * @param out Receives the value at column i, row j at index `j * width + i`.
 	 * @param x The x coordinate of the first column.
@@ -37,17 +41,69 @@ class Batch {
 	 */
 	public static function grid(module:IModule2D, out:Vector<F32>, x:F32, y:F32, step:F32, width:Int, height:Int):Void {
 		var xs = new Vector<F32>(width);
-		var ys = new Vector<F32>(width);
-		var row = new Vector<F32>(width);
+		var ys = new Vector<F32>(height);
 		for (i in 0...width) {
 			xs[i] = x + i * step;
 		}
 		for (j in 0...height) {
-			var rowY:F32 = y + j * step;
-			for (i in 0...width) {
-				ys[i] = rowY;
+			ys[j] = y + j * step;
+		}
+		gridInBands(module, out, xs, width, ys, height);
+	}
+
+	/**
+	 * gridValues in bands of BAND_ROWS rows, so each module's scratch buffers stay
+	 * small enough to sit in cache while column work is still shared across the band.
+	 */
+	public static function gridInBands(module:IModule2D, out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		if (height <= BAND_ROWS) {
+			gridValues(module, out, xs, width, ys, height);
+			return;
+		}
+		var bandYs = new Vector<F32>(BAND_ROWS);
+		var bandOut = new Vector<F32>(width * BAND_ROWS);
+		var j = 0;
+		while (j < height) {
+			var rows = height - j < BAND_ROWS ? height - j : BAND_ROWS;
+			for (r in 0...rows) {
+				bandYs[r] = ys[j + r];
 			}
-			values(module, row, xs, ys, width);
+			gridValues(module, bandOut, xs, width, bandYs, rows);
+			Vector.blit(bandOut, 0, out, j * width, width * rows);
+			j += rows;
+		}
+	}
+
+
+	/**
+	 * Samples every combination of the given columns and rows, using
+	 * `IGridModule2D.grid` when the module has it and one batch per row otherwise.
+	 * @param out Receives `value(xs[i], ys[j])` at index `j * width + i`.
+	 * @param xs The x coordinate of each column.
+	 * @param width The number of columns.
+	 * @param ys The y coordinate of each row.
+	 * @param height The number of rows.
+	 */
+	public static function gridValues(module:IModule2D, out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		var gridModule = Std.downcast(module, IGridModule2D);
+		if (gridModule != null) {
+			gridModule.grid(out, xs, width, ys, height);
+		} else {
+			gridByRows(module, out, xs, width, ys, height);
+		}
+	}
+
+	/**
+	 * gridValues one row at a time through `values`. Needs only one row of scratch.
+	 */
+	public static function gridByRows(module:IModule2D, out:Vector<F32>, xs:Vector<F32>, width:Int, ys:Vector<F32>, height:Int):Void {
+		var rowYs = new Vector<F32>(width);
+		var row = new Vector<F32>(width);
+		for (j in 0...height) {
+			for (i in 0...width) {
+				rowYs[i] = ys[j];
+			}
+			values(module, row, xs, rowYs, width);
 			Vector.blit(row, 0, out, j * width, width);
 		}
 	}
