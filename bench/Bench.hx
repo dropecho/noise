@@ -9,8 +9,9 @@ typedef BenchCase = {name:String, module:IModule2D};
 
 /**
  * Times every noise module over a SIZE x SIZE grid and prints one line per module:
- * name, median milliseconds per grid, and a checksum of the sampled values.
- * An optimization that changes a checksum changed the output.
+ * name, median milliseconds per grid, and checksums of the grid and of scattered
+ * points (negative coordinates included). An optimization that changes a checksum
+ * changed the output.
  */
 class Bench {
 	static final SIZE:Int = #if bench_size Std.parseInt(haxe.macro.Compiler.getDefine("bench_size")) #else 512 #end;
@@ -23,7 +24,7 @@ class Bench {
 		for (c in cases()) {
 			if (filter != null && !filter.match(c.name)) continue;
 			var r = measure(c.module);
-			Sys.println('${pad(c.name, 28)}${pad(Std.string(Math.round(r.ms * 100) / 100), 10)}${r.checksum}');
+			Sys.println('${pad(c.name, 28)}${pad(Std.string(Math.round(r.ms * 100) / 100), 10)}${r.checksum}/${scatter(c.module)}');
 		}
 	}
 
@@ -51,6 +52,25 @@ class Bench {
 			for (y in 0...SIZE) {
 				sum += module.value(x * step, y * step);
 			}
+		}
+		return sum;
+	}
+
+	/**
+	 * Sums a module's values at pseudo-random points in [-512, 512) on both axes.
+	 * @param module The module to sample.
+	 * @return The sum, as a checksum.
+	 */
+	static function scatter(module:IModule2D):Float {
+		var seed:Float = 12345;
+		inline function next():Float {
+			// Park-Miller LCG in doubles: products stay below 2^53, so it is exact everywhere.
+			seed = (seed * 16807) % 2147483647;
+			return seed / 2147483647 * 1024 - 512;
+		}
+		var sum:Float = 0;
+		for (_ in 0...65536) {
+			sum += module.value(next(), next());
 		}
 		return sum;
 	}
