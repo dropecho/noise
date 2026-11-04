@@ -42,14 +42,21 @@ passed to the constructor), so a module can be shared and sampled safely.
 - **Utilities** (`src/dropecho/utils/`): `FastMath` (with the `F32`/`I32` abstracts),
   `MathUtils`, `Coords`, `Vector`, `VectorMath`.
 
-- **Targets:** JS CommonJS, JS ES module (+ `.d.ts` via genes), C# (DLL).
+- **Targets:** JS CommonJS and JS ES module (+ `.d.ts` via genes) from `build.hxml`; a Godot
+  GDScript addon from the separate `build-godot.hxml`. A C# (DLL) target exists in
+  `targets/cs.hxml` but is **commented out** of both `build.hxml` and `test.hxml` while the
+  Haxe C# target is in flux upstream — do not describe it as a live target.
 - **Test runner:** `dropecho.testing` (auto-discovery) over `utest`; `instrument` for coverage.
 - **Dependencies:** managed by [lix](https://github.com/lix-pm/lix.client). The Haxe version
   is pinned in `.haxerc`; each target's libs are pinned in `haxe_libraries/*.hxml`. Library
   deps: `format`, `seedyrng` (seeded RNG), `dropecho.macros` (the `@:build` constructor
-  macro). `dropecho.testing`, `utest`, `genes`, and `hxnodejs` support build/test.
+  macro). `dropecho.testing`, `utest`, `genes`, and `hxnodejs` support build/test. The Godot
+  build additionally uses `reflaxe` + `gdscript` (reflaxe.GDScript), both pinned to **forks**
+  — see the Godot section below.
 - **Source root:** `src/` · **Tests root:** `test/`
-- **Releases:** automated via `semantic-release` (+ `semantic-release-haxelib`).
+- **Releases:** automated via `semantic-release` (+ `semantic-release-haxelib`), off the
+  `main` branch. The release also builds the Godot addon and attaches it to the GitHub
+  release as a zip (`@semantic-release/exec` prepare step in `.releaserc.json`).
 
 ---
 
@@ -61,11 +68,16 @@ src/dropecho/utils/     # FastMath (F32/I32 abstracts), MathUtils, Coords, Vecto
 test/noise/             # utest cases, auto-discovered by filename (*Tests.hx)
 test/utils/
 build.hxml              # multi-target build (shared opts + --each/--next)
-targets/                # one hxml per target (js cjs, js-esm, cs)
+build-godot.hxml        # Godot GDScript addon build (separate on purpose — beta toolchain)
+targets/                # one hxml per target (js, js-esm, cs, gdscript)
 test.hxml               # test build (libs/targets only — no -main)
+tools/GdNamespace.hx    # Godot-build-only macro: stamps @:nativeName for class_name namespacing
+godot-overrides/        # GDScript-only std shadows (seedyrng.Random 32-bit rotate fix)
+godot/addon/            # hand-written .gd files copied into the built addon
 .dropecho.testing.json  # test-runner config (coverage, root_package, hxml)
 .haxerc                 # lix: pinned Haxe version + scoped lib resolution
 haxe_libraries/         # lix: one hxml per pinned dep (keep manual macro/-D lines when re-pinning)
+upstream-issues.md      # reflaxe.GDScript bugs found here + Godot benchmark numbers
 dist/                   # compiled output
 artifacts/              # compiled test output + coverage reports
 ```
@@ -81,10 +93,12 @@ registers every `*Tests.hx` class on the classpath (note the plural — `Test.hx
 Prefer `npm` scripts over invoking Haxe tools directly.
 
 ```bash
-npm install      # → lix download   (fetch the pinned Haxe + libs into the lix cache)
-npm run build    # → clean, then haxe build.hxml   (JS cjs + JS esm + C#)
-npm test         # → lix dropecho.testing
-npm run clean    # remove dist/ and artifacts/
+npm install         # → lix download   (fetch the pinned Haxe + libs into the lix cache)
+npm run build       # → clean, then haxe build.hxml   (JS cjs + JS esm), then copy esm to docs/
+npm test            # → lix dropecho.testing
+npm run build:godot # → haxe build-godot.hxml, then copy godot/addon/ over the output
+npm run package:godot # → build:godot, then zip dist/godot/addons into a release zip
+npm run clean       # remove dist/ and artifacts/
 ```
 
 `npm install` runs `lix download` (via the `prepare` lifecycle script) to materialize the deps
@@ -100,10 +114,38 @@ pinned in `.haxerc` + `haxe_libraries/`. To add a dependency, run `lix install h
   annotations.
 - `test.hxml` lists libs/targets only — **no `-main`**. The `dropecho.testing` runner injects
   `--main dropecho.testing.AutoTest` (plus instrument/coverage from `.dropecho.testing.json`),
-  then builds and runs the suite on its enabled targets (JS via Node; C# and Python blocks are
-  present but the active runnable target is JS).
+  then builds and runs the suite on its enabled targets (JS via Node and Python; the C# block
+  is commented out alongside the one in `build.hxml`).
 
 To type-check quickly without generating output: `haxe build.hxml --no-output`.
+
+---
+
+## Godot / GDScript addon
+
+`build-godot.hxml` compiles the whole library to GDScript 2.0 via
+[reflaxe.GDScript](https://github.com/SomeRanDev/reflaxe.GDScript), emitting an installable
+addon (including a generated `plugin.cfg`) into `dist/godot/addons/dropecho_noise`. It is
+**deliberately separate** from `build.hxml`: the target is beta, so it stays out of the stable
+npm/haxelib path. Read the header comment in `build-godot.hxml` before changing anything there
+— it documents each non-obvious line and why removing it breaks the build.
+
+Things to know before touching this build:
+
+- **The pins are forks, not upstream.** `haxe_libraries/reflaxe.hxml` and
+  `haxe_libraries/gdscript.hxml` point at `vantreeseba/reflaxe` and
+  `vantreeseba/reflaxe.GDScript`, which carry fixes for eight-plus miscompiles of this
+  library. `upstream-issues.md` catalogues every one with a minimal repro and its status.
+- **Re-pinning the gdscript fork means editing two files.** The commit hash appears both in
+  `haxe_libraries/gdscript.hxml` and in the `-cp .../std` and `.../std/gdscript/_std` lines of
+  `build-godot.hxml`; the std overrides must be on the real command-line classpath because
+  core types bind before init macros run.
+- **`godot-overrides/` is loaded via `--macro addClassPath`,** not `-cp`, because lix hoists
+  `-lib` classpaths ahead of command-line `-cp` and the real `seedyrng` would win.
+- **Measure perf changes in Godot before believing them.** `upstream-issues.md` records the
+  benchmark methodology and the actual numbers; one codegen "fix" there compiled, read
+  correctly, and still broke the addon at runtime. Sampling is ~97% of the cost — fill-loop
+  work has almost nothing to win.
 
 ---
 

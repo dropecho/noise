@@ -5,7 +5,7 @@
 #
 # UNBLOCKED: reflaxe.GDScript 1.0.0-beta miscompiled this library several ways
 # (see upstream-issues.md); all are fixed in github-pinned forks, wired in via
-# the untracked haxe_libraries/{reflaxe,gdscript}.hxml lix pins:
+# the haxe_libraries/{reflaxe,gdscript}.hxml lix pins:
 #   - crash on the generators                          (reflaxe fork)
 #   - colliding de-shadowed constructor params         (reflaxe fork)
 #   - invalid GDScript for array-comprehension tables   (reflaxe.GDScript fork)
